@@ -16,7 +16,8 @@ enum class POINT_TYPE {
 };
 
 enum class DEFAULT {
-  POINT_SIZE = 20
+  POINT_SIZE = 20,
+  SNAKE_LENGTH = 3
 };
 
 enum class OBSTACLE_NUM {
@@ -25,6 +26,13 @@ enum class OBSTACLE_NUM {
 
 enum class LEVEL {
   _0
+};
+
+enum class DIRECTION {
+  UP,
+  DOWN,
+  LEFT,
+  RIGHT
 };
 
 static std::unordered_map<POINT_TYPE, std::string> const G_TYPE_NAME {

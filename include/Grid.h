@@ -37,6 +37,10 @@ public:
     return grid_.at(t_id);
   }
 
+  CPoint const & at(UI32 t_id) const {
+    return grid_.at(t_id);
+  }
+
   CPoint& random_point();
 protected:
   void init_grid();

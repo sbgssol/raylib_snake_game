@@ -10,6 +10,13 @@ public:
       type_(t_type) {
   }
 
+  UI32 x() const {
+    return x_;
+  }
+  UI32 y() const {
+    return y_;
+  }
+
   POINT_TYPE type() const {
     return type_;
   }

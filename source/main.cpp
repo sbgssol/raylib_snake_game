@@ -8,6 +8,7 @@
 #include "random.h"
 #include "Grid.h"
 #include "Background.h"
+#include "Snake.h"
 //----------------------------------------------------------------------------------
 // Some Defines
 //----------------------------------------------------------------------------------
@@ -62,18 +63,22 @@ int FPS = 60;
 
 CGrid grid;
 CBackground background;
+CSnake s;
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
 int main(void) {
   RRND::Basic::set_seed(std::random_device{}());
-  std::cout << "Input screen width: "; std::cin >> screenWidth;
-  std::cout << "Input screen height: "; std::cin >> screenHeight;
-  std::cout << "Input grid size: "; std::cin >> GRID_SIZE;
+  screenHeight = 600;
+  screenWidth = 600;
+  GRID_SIZE = 20;
+  //std::cout << "Input screen width: "; std::cin >> screenWidth;
+  //std::cout << "Input screen height: "; std::cin >> screenHeight;
+  //std::cout << "Input grid size: "; std::cin >> GRID_SIZE;
   
   grid = CGrid(screenWidth, screenHeight, GRID_SIZE);
   background = CBackground{ &grid, LEVEL::_0 };
-  
+  s = CSnake{ &grid };
   // Initialization (Note windowTitle is unused on Android)
   //---------------------------------------------------------
   //std::cout << "Input grid size: "; std::cin >> GRID_SIZE;
@@ -229,35 +234,12 @@ void UpdateGame(void) {
 
 // Draw game (one frame)
 void DrawGame(void) {
-  
-  RRND::Core<POINT_TYPE> random_type;
-  random_type.add(POINT_TYPE::UNDEFINED);
-  random_type.add(POINT_TYPE::SPACE);
-  random_type.add(POINT_TYPE::FOOD);
-  random_type.add(POINT_TYPE::WALL);
-  random_type.add(POINT_TYPE::OBSTACLE);
-  random_type.add(POINT_TYPE::SNAKE_HEAD);
-  random_type.add(POINT_TYPE::SNAKE_BODY);
-  random_type.add(POINT_TYPE::SNAKE_TAIL);
-
   BeginDrawing();
 
   ClearBackground(RAYWHITE);
 
   if (!gameOver) {
     grid.draw();
-    //for (int i = 0; i < screenWidth / GRID_SIZE + 1; i++) {
-    //  Vector2 start_pos_vertical {GRID_SIZE * i + offset.x / 2, offset.y / 2};
-    //  Vector2 end_pos_vertical{ GRID_SIZE * i + offset.x / 2, screenHeight - offset.y / 2 };
-    //
-    //  DrawLineV(start_pos_vertical, end_pos_vertical, DARKGRAY);
-    //}
-    //
-    //for (int i = 0; i < screenHeight / GRID_SIZE + 1; i++) {
-    //  Vector2 start_pos_horizontal{ offset.x / 2, GRID_SIZE * i + offset.y / 2 };
-    //  Vector2 end_pos_horizontal{ screenWidth - offset.x / 2, GRID_SIZE * i + offset.y / 2 };
-    //  DrawLineV(start_pos_horizontal, end_pos_horizontal, DARKGRAY);
-    //}
 
     // Draw snake
     for (int i = 0; i < counterTail; i++) DrawRectangleV(snake[i].position, snake[i].size, snake[i].color);
