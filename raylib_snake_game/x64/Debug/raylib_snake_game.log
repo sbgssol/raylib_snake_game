@@ -1,0 +1,26 @@
+﻿  Background.cpp
+  Grid.cpp
+  main.cpp
+E:\Projects\01_Github\raylib_snake_game\source\main.cpp(74,43): warning C4244: 'argument': conversion from 'float' to 'const UI32', possible loss of data
+E:\Projects\01_Github\raylib_snake_game\source\main.cpp(123,26): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+E:\Projects\01_Github\raylib_snake_game\source\main.cpp(124,27): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+E:\Projects\01_Github\raylib_snake_game\source\main.cpp(202,79): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+E:\Projects\01_Github\raylib_snake_game\source\main.cpp(202,157): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+E:\Projects\01_Github\raylib_snake_game\source\main.cpp(206,83): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+E:\Projects\01_Github\raylib_snake_game\source\main.cpp(206,161): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Point.cpp
+E:\Projects\01_Github\raylib_snake_game\source\Point.cpp(10,25): warning C4838: conversion from 'UI32' to 'float' requires a narrowing conversion
+E:\Projects\01_Github\raylib_snake_game\source\Point.cpp(10,25): warning C4244: 'initializing': conversion from 'UI32' to 'float', possible loss of data
+E:\Projects\01_Github\raylib_snake_game\source\Point.cpp(10,51): warning C4838: conversion from 'UI32' to 'float' requires a narrowing conversion
+E:\Projects\01_Github\raylib_snake_game\source\Point.cpp(10,51): warning C4244: 'initializing': conversion from 'UI32' to 'float', possible loss of data
+E:\Projects\01_Github\raylib_snake_game\source\Point.cpp(10,82): warning C4838: conversion from 'UI32' to 'float' requires a narrowing conversion
+E:\Projects\01_Github\raylib_snake_game\source\Point.cpp(10,82): warning C4244: 'initializing': conversion from 'UI32' to 'float', possible loss of data
+E:\Projects\01_Github\raylib_snake_game\source\Point.cpp(10,101): warning C4838: conversion from 'UI32' to 'float' requires a narrowing conversion
+E:\Projects\01_Github\raylib_snake_game\source\Point.cpp(10,101): warning C4244: 'initializing': conversion from 'UI32' to 'float', possible loss of data
+E:\Projects\01_Github\raylib_snake_game\source\Point.cpp(12,37): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+E:\Projects\01_Github\raylib_snake_game\source\Point.cpp(12,28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+E:\Projects\01_Github\raylib_snake_game\source\Point.cpp(12,23): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+E:\Projects\01_Github\raylib_snake_game\source\Point.cpp(12,18): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Generating Code...
+Random_Core.lib(random.obj) : warning LNK4099: PDB 'Random_Core.pdb' was not found with 'Random_Core.lib(random.obj)' or at 'E:\Projects\01_Github\raylib_snake_game\x64\Debug\Random_Core.pdb'; linking object as if no debug info
+  raylib_snake_game.vcxproj -> E:\Projects\01_Github\raylib_snake_game\x64\Debug\raylib_snake_game.exe
