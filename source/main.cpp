@@ -2,13 +2,12 @@
 #include <random>
 
 #include "raylib.h"
-#include "Point.h"
 #include "macro.h"
-
-#include "random.h"
+#include "ratio_random.h"
 #include "Grid.h"
 #include "Background.h"
 #include "Snake.h"
+#include "Food.h"
 //----------------------------------------------------------------------------------
 // Some Defines
 //----------------------------------------------------------------------------------
@@ -35,82 +34,69 @@ typedef struct Food {
 //------------------------------------------------------------------------------------
 // Global Variables Declaration
 //------------------------------------------------------------------------------------
-static int screenWidth = 800;
-static int screenHeight = 450;
-
-static int framesCounter = 0;
-static bool gameOver = false;
-static bool pause = false;
-
-static Food fruit = { 0 };
-static Snake snake[SNAKE_LENGTH] = { 0 };
+static int     screenWidth                 = 800;
+static int     screenHeight                = 450;
+                                           
+static int     framesCounter               = 0;
+static bool    gameOver                    = false;
+static bool    pause                       = false;
+                                           
+static Food    fruit                       = { 0 };
+static Snake   snake[SNAKE_LENGTH]         = { 0 };
 static Vector2 snakePosition[SNAKE_LENGTH] = { 0 };
-static bool allowMove = false;
-static Vector2 offset = { 0 };
-static int counterTail = 0;
+static bool    allowMove                   = false;
+static Vector2 offset                      = { 0 };
+static int     counterTail                 = 0;
 
 //------------------------------------------------------------------------------------
 // Module Functions Declaration (local)
 //------------------------------------------------------------------------------------
-static void InitGame(void);         // Initialize game
-static void UpdateGame(void);       // Update game (one frame)
-static void DrawGame(void);         // Draw game (one frame)
-static void UnloadGame(void);       // Unload game
-static void UpdateDrawFrame(void);  // Update and Draw (one frame)
+static void InitGame(void);         
+static void UpdateGame(void);       
+static void DrawGame(void);         
+static void UnloadGame(void);       
+static void UpdateDrawFrame(void);  
 
 float GRID_SIZE = 10;
-int FPS = 60;
+int   FPS       = 60;
 
 CGrid grid;
 CBackground background;
 CSnake s;
+CFood f;
+
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
 int main(void) {
   RRND::Basic::set_seed(std::random_device{}());
   screenHeight = 600;
-  screenWidth = 600;
-  GRID_SIZE = 20;
-  //std::cout << "Input screen width: "; std::cin >> screenWidth;
-  //std::cout << "Input screen height: "; std::cin >> screenHeight;
-  //std::cout << "Input grid size: "; std::cin >> GRID_SIZE;
+  screenWidth  = 600;
+  GRID_SIZE    = 20;
   
-  grid = CGrid(screenWidth, screenHeight, GRID_SIZE);
-  background = CBackground{ &grid, LEVEL::_0 };
-  s = CSnake{ &grid };
-  // Initialization (Note windowTitle is unused on Android)
-  //---------------------------------------------------------
-  //std::cout << "Input grid size: "; std::cin >> GRID_SIZE;
-  // std::cout << "Input FPS: "; std::cin >> FPS;
+  grid         = CGrid(screenWidth, screenHeight, static_cast<uint32_t>(GRID_SIZE));
+  background   = CBackground{ &grid, LEVEL::_0 };
+  s            = CSnake{ &grid };
+  f = CFood{ &grid.random_point() };
+
   InitWindow(screenWidth, screenHeight, "classic game: snake");
 
   InitGame();
-
-#if defined(PLATFORM_WEB)
-  emscripten_set_main_loop(UpdateDrawFrame, 60, 1);
-#else
+  
   SetTargetFPS(FPS);
-  //--------------------------------------------------------------------------------------
 
   // Main game loop
-  while (!WindowShouldClose())    // Detect window close button or ESC key
-  {
-    // Update and Draw
-    //----------------------------------------------------------------------------------
+  while (!WindowShouldClose()) {
     UpdateDrawFrame();
-    //----------------------------------------------------------------------------------
   }
-#endif
-  // De-Initialization
-  //--------------------------------------------------------------------------------------
+  
   UnloadGame();         // Unload loaded data (textures, sounds, models...)
 
   CloseWindow();        // Close window and OpenGL context
-  //--------------------------------------------------------------------------------------
 
   return 0;
 }
+
 
 //------------------------------------------------------------------------------------
 // Module Functions Definitions (local)
@@ -151,21 +137,21 @@ void UpdateGame(void) {
   if (!gameOver)     {
     if (IsKeyPressed('P')) pause = !pause;
 
-    if (!pause)         {
+    if (!pause) {
       // Player control
-      if (IsKeyPressed(KEY_RIGHT) && (snake[0].speed.x == 0) && allowMove)             {
+      if (IsKeyPressed(KEY_RIGHT) && (snake[0].speed.x == 0) && allowMove) {
         snake[0].speed = Vector2{ GRID_SIZE, 0 };
         allowMove = false;
       }
-      if (IsKeyPressed(KEY_LEFT) && (snake[0].speed.x == 0) && allowMove)             {
+      if (IsKeyPressed(KEY_LEFT) && (snake[0].speed.x == 0) && allowMove) {
         snake[0].speed = Vector2{ -GRID_SIZE, 0 };
         allowMove = false;
       }
-      if (IsKeyPressed(KEY_UP) && (snake[0].speed.y == 0) && allowMove)             {
+      if (IsKeyPressed(KEY_UP) && (snake[0].speed.y == 0) && allowMove) {
         snake[0].speed = Vector2{ 0, -GRID_SIZE };
         allowMove = false;
       }
-      if (IsKeyPressed(KEY_DOWN) && (snake[0].speed.y == 0) && allowMove)             {
+      if (IsKeyPressed(KEY_DOWN) && (snake[0].speed.y == 0) && allowMove) {
         snake[0].speed = Vector2{ 0, GRID_SIZE };
         allowMove = false;
       }
@@ -192,7 +178,7 @@ void UpdateGame(void) {
       // Wall behaviour
       if (((snake[0].position.x) > (screenWidth - offset.x)) ||
           ((snake[0].position.y) > (screenHeight - offset.y)) ||
-          (snake[0].position.x < 0) || (snake[0].position.y < 0))             {
+          (snake[0].position.x < 0) || (snake[0].position.y < 0)) {
         gameOver = true;
       }
 
@@ -224,7 +210,7 @@ void UpdateGame(void) {
 
       framesCounter++;
     }
-  }     else     {
+  } else {
     if (IsKeyPressed(KEY_ENTER))         {
       InitGame();
       gameOver = false;

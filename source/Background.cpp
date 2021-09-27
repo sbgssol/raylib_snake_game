@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "Background.h"
-#include "random.h"
+#include "ratio_random.h"
 
 void CBackground::init_wall(LEVEL t_level) {
   wall_.clear();

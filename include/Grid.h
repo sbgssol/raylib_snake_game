@@ -3,7 +3,7 @@
 
 #include "Point.h"
 #include "type_alias.h"
-#include "random.h"
+#include "ratio_random.h"
 
 class CGrid {
 public:

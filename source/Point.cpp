@@ -1,7 +1,7 @@
 #include "Point.h"
 #include "raylib.h"
 
-#include "random.h"
+#include "ratio_random.h"
 
 UI32 CPoint::size_ = (UI32)DEFAULT::POINT_SIZE;
 

@@ -59,9 +59,9 @@ static std::unordered_map<POINT_TYPE, char> const G_TYPE_CHAR {
 
 static std::unordered_map<POINT_TYPE, Color> G_TYPE_COLOR{
   { POINT_TYPE::UNDEFINED  , BLACK     },
-  { POINT_TYPE::SPACE      , WHITE     },
+  { POINT_TYPE::SPACE      , LIGHTGRAY },
   { POINT_TYPE::FOOD       , ORANGE    },
-  { POINT_TYPE::WALL       , RED  },
+  { POINT_TYPE::WALL       , RED       },
   { POINT_TYPE::OBSTACLE   , DARKBROWN },
   { POINT_TYPE::SNAKE_HEAD , DARKBLUE  },
   { POINT_TYPE::SNAKE_BODY , BLUE      },
