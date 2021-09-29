@@ -29,19 +29,21 @@ public:
 
   void draw() const {
     for(auto const& p : grid_) {
-      p.second.Draw();
+      p.second.draw();
     }
   }
 
-  CPoint& at(UI32 t_id) {
-    return grid_.at(t_id);
+  CPoint* at(UI32 t_id) {
+    return &grid_.at(t_id);
   }
 
   CPoint const & at(UI32 t_id) const {
     return grid_.at(t_id);
   }
 
-  CPoint& random_point();
+  void dump() const;
+
+  //CPoint& random_point();
 protected:
   void init_grid();
 private:
@@ -49,6 +51,6 @@ private:
   UI32 width_;
   UI32 height_;
   UI32 grid_size_;
-  RRND::Core<UI32> rnd_;
+  //RRND::Core<UI32> rnd_;
 };
 

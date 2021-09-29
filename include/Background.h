@@ -8,17 +8,18 @@ class CBackground {
 public:
   CBackground() = default;
   CBackground(CGrid* t_grid, LEVEL t_level) : grid_(t_grid), level_(t_level) {
-    init_wall(t_level);
-    init_obstacle(t_level);
+    init_wall();
+    init_obstacle();
   }
+  
 
 protected:
-  void init_wall(LEVEL t_level);
-  void init_obstacle(LEVEL t_level);
+  void init_wall();
+  void init_obstacle();
 private:
   CGrid* grid_;
   LEVEL level_;
-  std::unordered_map<UI32, CPoint> wall_;
-  std::unordered_map<UI32, CPoint> obstacle_;
+  std::unordered_map<UI32, CPoint*> wall_;
+  std::unordered_map<UI32, CPoint*> obstacle_;
 };
 

@@ -2,12 +2,8 @@
 #include <random>
 
 #include "raylib.h"
-#include "macro.h"
 #include "ratio_random.h"
-#include "Grid.h"
-#include "Background.h"
-#include "Snake.h"
-#include "Food.h"
+#include "Stage.h"
 //----------------------------------------------------------------------------------
 // Some Defines
 //----------------------------------------------------------------------------------
@@ -34,8 +30,8 @@ typedef struct Food {
 //------------------------------------------------------------------------------------
 // Global Variables Declaration
 //------------------------------------------------------------------------------------
-static int     screenWidth                 = 800;
-static int     screenHeight                = 450;
+static int     screenWidth                 = 900;
+static int     screenHeight                = 600;
                                            
 static int     framesCounter               = 0;
 static bool    gameOver                    = false;
@@ -60,10 +56,7 @@ static void UpdateDrawFrame(void);
 float GRID_SIZE = 10;
 int   FPS       = 60;
 
-CGrid grid;
-CBackground background;
-CSnake s;
-CFood f;
+CStage* stage;
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -71,19 +64,16 @@ CFood f;
 int main(void) {
   RRND::Basic::set_seed(std::random_device{}());
   screenHeight = 600;
-  screenWidth  = 600;
+  screenWidth  = 900;
   GRID_SIZE    = 20;
   
-  grid         = CGrid(screenWidth, screenHeight, static_cast<uint32_t>(GRID_SIZE));
-  background   = CBackground{ &grid, LEVEL::_0 };
-  s            = CSnake{ &grid };
-  f = CFood{ &grid.random_point() };
 
   InitWindow(screenWidth, screenHeight, "classic game: snake");
 
   InitGame();
   
   SetTargetFPS(FPS);
+  
 
   // Main game loop
   while (!WindowShouldClose()) {
@@ -104,6 +94,9 @@ int main(void) {
 
 // Initialize game variables
 void InitGame(void) {
+  delete stage;
+  stage = new CStage{ {static_cast<UI32>(screenWidth), static_cast<UI32>(screenHeight), static_cast<UI32>(GRID_SIZE)}, LEVEL::_0 };
+  stage->dump();
   framesCounter = 0;
   gameOver = false;
   pause = false;
@@ -225,7 +218,7 @@ void DrawGame(void) {
   ClearBackground(RAYWHITE);
 
   if (!gameOver) {
-    grid.draw();
+    stage->draw();
 
     // Draw snake
     for (int i = 0; i < counterTail; i++) DrawRectangleV(snake[i].position, snake[i].size, snake[i].color);

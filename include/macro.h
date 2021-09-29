@@ -35,6 +35,7 @@ enum class DIRECTION {
   RIGHT
 };
 
+
 static std::unordered_map<POINT_TYPE, std::string> const G_TYPE_NAME {
   { POINT_TYPE::UNDEFINED  , "Undefined"  },
   { POINT_TYPE::SPACE      , "Space"      },

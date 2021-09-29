@@ -13,12 +13,16 @@ public:
     init(t_grid);
   }
 
-  CSnake(CPoint* const t_head, CPoint* const t_tail, std::vector<CPoint*>& const t_body, UI32 const t_length = static_cast<UI32>(DEFAULT::SNAKE_LENGTH))
+
+  CSnake(CPoint* const t_head, CPoint* const t_tail, std::vector<CPoint*> const& t_body, UI32 const t_length,
+    DIRECTION const t_direction)
     : head_(t_head),
       tail_(t_tail),
       body_(t_body),
-      length_(t_length) {
+      length_(t_length),
+      direction_(t_direction) {
   }
+
 protected:
   void init(CGrid* t_grid);
 private:

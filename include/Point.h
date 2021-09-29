@@ -29,7 +29,8 @@ public:
     type_ = t_type;
   }
 
-  void Draw() const;
+  void draw() const;
+  void dump() const;
 
 private:
   static UI32 size_; // pixel
