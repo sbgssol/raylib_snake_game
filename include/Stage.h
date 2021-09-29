@@ -11,6 +11,8 @@ public:
   CStage() = default;
   CStage(SScreenInfo t_screen_info, LEVEL t_level);
 
+  void init_rest_points();
+
   void draw() const;
   void dump() const;
 protected:

@@ -7,10 +7,18 @@ CStage::CStage(SScreenInfo t_screen_info, LEVEL t_level) {
   background_ = new CBackground{ grid_, t_level };
   auto is_boundary = [&](UI32 d) -> bool {
     return ((d != 0) && (d != grid_->width() - 1) && (d != grid_->height() - 1));
-    //return ((d == 0) || (d == grid_->width() - 1) || (d == grid_->height() - 1));
   };
   food_ = new CFood{ this->random_point(is_boundary, is_boundary) };
-  //snake_ = new CSnake{}
+
+  init_rest_points();
+}
+
+void CStage::init_rest_points() {
+  for(UI32 id = 0; id < grid_->width() * grid_->height(); ++id) {
+    if(grid_->at(id)->type() == POINT_TYPE::UNDEFINED) {
+      grid_->at(id)->set_type(POINT_TYPE::SPACE);
+    }
+  }
 }
 
 void CStage::draw() const {

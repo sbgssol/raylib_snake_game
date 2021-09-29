@@ -96,7 +96,7 @@ int main(void) {
 void InitGame(void) {
   delete stage;
   stage = new CStage{ {static_cast<UI32>(screenWidth), static_cast<UI32>(screenHeight), static_cast<UI32>(GRID_SIZE)}, LEVEL::_0 };
-  stage->dump();
+  //stage->dump();
   framesCounter = 0;
   gameOver = false;
   pause = false;
@@ -215,7 +215,7 @@ void UpdateGame(void) {
 void DrawGame(void) {
   BeginDrawing();
 
-  ClearBackground(RAYWHITE);
+  ClearBackground(DARKGRAY);
 
   if (!gameOver) {
     stage->draw();
