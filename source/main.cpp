@@ -148,6 +148,9 @@ void UpdateGame(void) {
         snake[0].speed = Vector2{ 0, GRID_SIZE };
         allowMove = false;
       }
+      if (IsKeyPressed(KEY_R)) {
+        SetTargetFPS(240);
+      }
       if(IsKeyPressed(KEY_T)) {
         SetTargetFPS(120);
       }

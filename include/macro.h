@@ -35,6 +35,19 @@ enum class DIRECTION {
   RIGHT
 };
 
+enum class SPEED {
+  _1 = 1,
+  _2,
+  _3,
+  _4,
+  _5,
+  _6,
+  _7,
+  _8,
+  _9,
+  _10
+};
+
 
 static std::unordered_map<POINT_TYPE, std::string> const G_TYPE_NAME {
   { POINT_TYPE::UNDEFINED  , "Undefined"  },

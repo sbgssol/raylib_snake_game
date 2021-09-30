@@ -14,7 +14,6 @@ void CBackground::init_wall() {
           wall_.insert(std::make_pair(id, grid_->at(id)));
         }
         if ((id) % grid_->height() == 0) {
-          watch(id);
           grid_->at(id)->set_type(POINT_TYPE::WALL);
           wall_.insert(std::make_pair(id, grid_->at(id)));
         }
