@@ -17,7 +17,7 @@ enum class POINT_TYPE {
 
 enum class DEFAULT {
   POINT_SIZE = 20,
-  SNAKE_LENGTH = 3
+  SNAKE_LENGTH = 5
 };
 
 enum class OBSTACLE_NUM {
@@ -73,7 +73,7 @@ static std::unordered_map<POINT_TYPE, char> const G_TYPE_CHAR {
 
 static std::unordered_map<POINT_TYPE, Color> G_TYPE_COLOR{
   { POINT_TYPE::UNDEFINED  , BLACK     },
-  { POINT_TYPE::SPACE      , LIGHTGRAY },
+  { POINT_TYPE::SPACE      , WHITE },
   { POINT_TYPE::FOOD       , ORANGE    },
   { POINT_TYPE::WALL       , RED       },
   { POINT_TYPE::OBSTACLE   , DARKBROWN },

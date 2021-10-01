@@ -9,9 +9,10 @@
 class CSnake {
 public:
   CSnake() = default;
-  CSnake(CPoint* const t_head, CPoint* const t_tail, std::vector<CPoint*> const& t_body, UI32 const t_length,
+  CSnake(CGrid* t_grid, CPoint* const t_head, CPoint* const t_tail, std::vector<CPoint*> const& t_body, UI32 const t_length,
     DIRECTION const t_direction, SPEED t_speed = SPEED::_2)
-    : head_(t_head),
+    : grid_(t_grid),
+      head_(t_head),
       tail_(t_tail),
       body_(t_body),
       length_(t_length),
@@ -19,9 +20,20 @@ public:
       speed_(t_speed){
   }
 
+  void move(DIRECTION t_direction);
+  
 protected:
-  void init(CGrid* t_grid);
+  void set_head(CPoint* t_head);
+  void set_tail(CPoint* t_tail);
+  void set_body(std::vector<CPoint*> const& t_body);
+  void set_direction(DIRECTION t_direction);
+
+  void move_up();
+  void move_down();
+  void move_right();
+  void move_left();
 private:
+  CGrid*               grid_;
   CPoint*              head_;
   CPoint*              tail_;
   std::vector<CPoint*> body_;

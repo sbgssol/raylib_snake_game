@@ -19,6 +19,10 @@ CStage::~CStage() {
   delete snake_;
 }
 
+void CStage::move_snake(DIRECTION t_d) {
+  this->snake_->move(t_d);
+}
+
 void CStage::init_rest_points() {
   for(UI32 id = 0; id < grid_->width() * grid_->height(); ++id) {
     if(grid_->at(id)->type() == POINT_TYPE::UNDEFINED) {
@@ -48,28 +52,35 @@ CSnake* CStage::init_snake() {
   DIRECTION const direction = RRND::Core<DIRECTION>::random({ DIRECTION::DOWN, DIRECTION::UP, DIRECTION::LEFT, DIRECTION::RIGHT }); 
   if(direction == DIRECTION::DOWN) {
     UI32 head_id = head->x() * grid_->height() + head->y();
-    tail = grid_->at(head_id - 3);
-    body.emplace_back(grid_->at(head_id - 1));
-    body.emplace_back(grid_->at(head_id - 2));
+    tail = grid_->at(head_id - static_cast<UI32>(DEFAULT::SNAKE_LENGTH));
+    for(UI32 i = 0; i < static_cast<UI32>(DEFAULT::SNAKE_LENGTH); ++i) {
+      body.emplace_back(grid_->at(head_id - i));
+    }    
   }
+
   if (direction == DIRECTION::UP) {
     UI32 head_id = head->x() * grid_->height() + head->y();
-    tail = grid_->at(head_id + 3);    
-    body.emplace_back(grid_->at(head_id + 1));
-    body.emplace_back(grid_->at(head_id + 2));
+    tail = grid_->at(head_id + static_cast<UI32>(DEFAULT::SNAKE_LENGTH));
+    for (UI32  i = 0; i < static_cast<UI32>(DEFAULT::SNAKE_LENGTH); i++) 		{
+      body.emplace_back(grid_->at(head_id + i));
+    }
   }
+
   if (direction == DIRECTION::LEFT) {
     UI32 head_id = head->x() * grid_->height() + head->y();
-    tail = grid_->at(head_id - 3*grid_->height());    
-    body.emplace_back(grid_->at(head_id - grid_->height() * 1));
-    body.emplace_back(grid_->at(head_id - grid_->height() * 2));
+    tail = grid_->at(head_id - static_cast<UI32>(DEFAULT::SNAKE_LENGTH) * grid_->height());
+    for (UI32 i = 0; i < static_cast<UI32>(DEFAULT::SNAKE_LENGTH); i++) 		{
+      body.emplace_back(grid_->at(head_id - grid_->height() * i));
+    }
   }
+
   if (direction == DIRECTION::RIGHT) {
     UI32 head_id = head->x() * grid_->height() + head->y();
-    tail = grid_->at(head_id + grid_->height() * 3);
+    tail = grid_->at(head_id + grid_->height() * static_cast<UI32>(DEFAULT::SNAKE_LENGTH));
     
-    body.emplace_back(grid_->at(head_id + grid_->height() * 1));
-    body.emplace_back(grid_->at(head_id + grid_->height() * 2));
+    for (UI32 i = 0; i < static_cast<UI32>(DEFAULT::SNAKE_LENGTH); i++) 		{
+      body.emplace_back(grid_->at(head_id + grid_->height() * i));
+    }
   }
 
   for(auto & p : body) {
@@ -78,7 +89,7 @@ CSnake* CStage::init_snake() {
 
   head->set_type(POINT_TYPE::SNAKE_HEAD);
   tail->set_type(POINT_TYPE::SNAKE_TAIL);
-  CSnake* snake = new CSnake{ head, tail, body, static_cast<UI32>(DEFAULT::SNAKE_LENGTH), DIRECTION::DOWN };
+  CSnake* snake = new CSnake{grid_, head, tail, body, static_cast<UI32>(DEFAULT::SNAKE_LENGTH), direction };
   return snake;
 }
 

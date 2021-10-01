@@ -12,6 +12,8 @@ public:
   CStage(SScreenInfo t_screen_info, LEVEL t_level);
   ~CStage();
 
+  void move_snake(DIRECTION t_d);
+
   void draw() const;
   void dump() const;
 protected:

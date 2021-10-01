@@ -135,18 +135,22 @@ void UpdateGame(void) {
       if (IsKeyPressed(KEY_RIGHT) && (snake[0].speed.x == 0) && allowMove) {
         snake[0].speed = Vector2{ GRID_SIZE, 0 };
         allowMove = false;
+        stage->move_snake(DIRECTION::RIGHT);
       }
       if (IsKeyPressed(KEY_LEFT) && (snake[0].speed.x == 0) && allowMove) {
         snake[0].speed = Vector2{ -GRID_SIZE, 0 };
         allowMove = false;
+        stage->move_snake(DIRECTION::LEFT);
       }
       if (IsKeyPressed(KEY_UP) && (snake[0].speed.y == 0) && allowMove) {
         snake[0].speed = Vector2{ 0, -GRID_SIZE };
         allowMove = false;
+        stage->move_snake(DIRECTION::UP);
       }
       if (IsKeyPressed(KEY_DOWN) && (snake[0].speed.y == 0) && allowMove) {
         snake[0].speed = Vector2{ 0, GRID_SIZE };
         allowMove = false;
+        stage->move_snake(DIRECTION::DOWN);
       }
       if (IsKeyPressed(KEY_R)) {
         SetTargetFPS(240);
