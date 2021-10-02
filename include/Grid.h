@@ -15,6 +15,8 @@ public:
 
   CPoint* at(UI32 t_id);
   CPoint const& at(UI32 t_id) const;
+  IS_BOUNDARY get_boundary_status(UI32 t_id) const;
+  UI32 get_point_id(CPoint* const& t_point) const;
 
   void draw() const;
   void dump() const;

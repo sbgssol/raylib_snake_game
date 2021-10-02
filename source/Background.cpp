@@ -9,19 +9,7 @@ void CBackground::init_wall() {
   switch (level_) {
     case LEVEL::_0: {
       for (UI32 id = 0; id < (grid_->width() * grid_->height()); ++id) {
-        if(id < grid_->height()) {
-          grid_->at(id)->set_type(POINT_TYPE::WALL);
-          wall_.insert(std::make_pair(id, grid_->at(id)));
-        }
-        if ((id) % grid_->height() == 0) {
-          grid_->at(id)->set_type(POINT_TYPE::WALL);
-          wall_.insert(std::make_pair(id, grid_->at(id)));
-        }
-        if ((id + 1) % grid_->height() == 0) {
-          grid_->at(id)->set_type(POINT_TYPE::WALL);
-          wall_.insert(std::make_pair(id, grid_->at(id)));
-        }
-        if (id > (grid_->height() * grid_->width() - grid_->height())) {
+        if(grid_->get_boundary_status(id) != IS_BOUNDARY::NONE) {
           grid_->at(id)->set_type(POINT_TYPE::WALL);
           wall_.insert(std::make_pair(id, grid_->at(id)));
         }

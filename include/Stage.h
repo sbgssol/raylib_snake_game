@@ -13,6 +13,8 @@ public:
   ~CStage();
 
   void move_snake(DIRECTION t_d);
+  DIRECTION get_snake_direction() const;
+  DIRECTION get_initialized_snake_direction() const;
 
   void draw() const;
   void dump() const;
@@ -22,6 +24,8 @@ protected:
   void    init_rest_points();
   CPoint* random_point() const;
   CPoint* random_point(std::function<bool(UI32)> t_x_constraint, std::function<bool(UI32)> t_y_constraint) const;
+
+  DIRECTION    initialized_direction_{ DIRECTION::UP };
 private:
   CGrid*       grid_;
   CBackground* background_;

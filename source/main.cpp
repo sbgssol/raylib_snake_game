@@ -56,6 +56,9 @@ static void UpdateDrawFrame(void);
 float GRID_SIZE = 10;
 int   FPS       = 60;
 
+DIRECTION d = DIRECTION::UP; // Temporary value
+bool key_pressed = false;
+
 CStage* stage;
 
 //------------------------------------------------------------------------------------
@@ -94,6 +97,7 @@ int main(void) {
 
 // Initialize game variables
 void InitGame(void) {
+  key_pressed = false;
   delete stage;
   stage = new CStage{ {static_cast<UI32>(screenWidth), static_cast<UI32>(screenHeight), static_cast<UI32>(GRID_SIZE)}, LEVEL::_0 };
   //stage->dump();
@@ -124,33 +128,37 @@ void InitGame(void) {
   fruit.color = SKYBLUE;
   fruit.active = false;
 }
-
 // Update game (one frame)
 void UpdateGame(void) {
   if (!gameOver)     {
     if (IsKeyPressed('P')) pause = !pause;
 
     if (!pause) {
+      
       // Player control
       if (IsKeyPressed(KEY_RIGHT) && (snake[0].speed.x == 0) && allowMove) {
         snake[0].speed = Vector2{ GRID_SIZE, 0 };
         allowMove = false;
-        stage->move_snake(DIRECTION::RIGHT);
+        d = DIRECTION::RIGHT;
+        key_pressed = true;
       }
       if (IsKeyPressed(KEY_LEFT) && (snake[0].speed.x == 0) && allowMove) {
         snake[0].speed = Vector2{ -GRID_SIZE, 0 };
         allowMove = false;
-        stage->move_snake(DIRECTION::LEFT);
+        d = DIRECTION::LEFT;
+        key_pressed = true;
       }
       if (IsKeyPressed(KEY_UP) && (snake[0].speed.y == 0) && allowMove) {
         snake[0].speed = Vector2{ 0, -GRID_SIZE };
         allowMove = false;
-        stage->move_snake(DIRECTION::UP);
+        d = DIRECTION::UP;
+        key_pressed = true;
       }
       if (IsKeyPressed(KEY_DOWN) && (snake[0].speed.y == 0) && allowMove) {
         snake[0].speed = Vector2{ 0, GRID_SIZE };
         allowMove = false;
-        stage->move_snake(DIRECTION::DOWN);
+        d = DIRECTION::DOWN;
+        key_pressed = true;
       }
       if (IsKeyPressed(KEY_R)) {
         SetTargetFPS(240);
@@ -164,6 +172,9 @@ void UpdateGame(void) {
 
       // Snake movement
       for (int i = 0; i < counterTail; i++) snakePosition[i] = snake[i].position;
+      if ((framesCounter % 5) == 0 && key_pressed) {
+        stage->move_snake(d);
+      }
 
       if ((framesCounter % 5) == 0)             {
         for (int i = 0; i < counterTail; i++)                 {

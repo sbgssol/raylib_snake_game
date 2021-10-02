@@ -28,7 +28,7 @@ public:
   void set_type(POINT_TYPE t_type) {
     type_ = t_type;
   }
-
+  
   void draw() const;
   void dump() const;
 

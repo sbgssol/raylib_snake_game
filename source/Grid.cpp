@@ -39,6 +39,26 @@ CPoint const& CGrid::at(UI32 t_id) const {
   return grid_.at(t_id);
 }
 
+IS_BOUNDARY CGrid::get_boundary_status(UI32 t_id) const {
+  if (t_id < this->height()           ) {
+    return IS_BOUNDARY::LEFT;
+  }
+  if ((t_id) % this->height() == 0    ) {
+    return IS_BOUNDARY::TOP;
+  }
+  if ((t_id + 1) % this->height() == 0) {
+    return IS_BOUNDARY::DOWN;
+  }
+  if (t_id > (this->height() * this->width() - this->height())) {
+    return IS_BOUNDARY::RIGHT;
+  }
+  return IS_BOUNDARY::NONE;
+}
+
+UI32 CGrid::get_point_id(CPoint* const& t_point) const {
+  return t_point->x() * this->height() + t_point->y();
+}
+
 void CGrid::dump() const {
   for(auto const & p : grid_) {
     p.second.dump();

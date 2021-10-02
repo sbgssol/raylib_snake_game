@@ -48,6 +48,14 @@ enum class SPEED {
   _10
 };
 
+enum class IS_BOUNDARY {
+  NONE,
+  TOP,
+  DOWN,
+  LEFT,
+  RIGHT
+};
+
 
 static std::unordered_map<POINT_TYPE, std::string> const G_TYPE_NAME {
   { POINT_TYPE::UNDEFINED  , "Undefined"  },

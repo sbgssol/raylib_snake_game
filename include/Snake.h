@@ -21,17 +21,15 @@ public:
   }
 
   void move(DIRECTION t_direction);
+  DIRECTION get_direction() const;
   
 protected:
   void set_head(CPoint* t_head);
   void set_tail(CPoint* t_tail);
   void set_body(std::vector<CPoint*> const& t_body);
   void set_direction(DIRECTION t_direction);
+  void transfer_body();
 
-  void move_up();
-  void move_down();
-  void move_right();
-  void move_left();
 private:
   CGrid*               grid_;
   CPoint*              head_;
