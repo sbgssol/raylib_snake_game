@@ -17,7 +17,7 @@ enum class POINT_TYPE {
 
 enum class DEFAULT {
   POINT_SIZE = 20,
-  SNAKE_LENGTH = 5
+  SNAKE_LENGTH = 2
 };
 
 enum class OBSTACLE_NUM {

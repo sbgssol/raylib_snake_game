@@ -19,7 +19,8 @@ CStage::~CStage() {
 }
 
 void CStage::move_snake(DIRECTION t_d) {
-  this->snake_->move(t_d);
+  this->snake_->move(t_d, just_eat_food_);
+  just_eat_food_ = false;
 }
 
 DIRECTION CStage::get_snake_direction() const {
@@ -36,6 +37,7 @@ bool CStage::food_collision() const {
 
 void CStage::handle_food_collision() {
   spawn_food();
+  just_eat_food_ = true;
 }
 
 void CStage::spawn_food() {

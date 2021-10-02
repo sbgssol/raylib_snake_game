@@ -20,7 +20,7 @@ public:
       speed_(t_speed){
   }
 
-  void move(DIRECTION t_direction);
+  void move(DIRECTION t_direction, bool t_just_eat_food);
   CPoint* head() const;
   DIRECTION get_direction() const;
   void increase_length(UI32 t_len);

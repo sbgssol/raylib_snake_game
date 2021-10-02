@@ -30,6 +30,7 @@ protected:
   CPoint* random_point(std::function<bool(UI32)> t_x_constraint, std::function<bool(UI32)> t_y_constraint) const;
 
   DIRECTION    initialized_direction_{ DIRECTION::UP };
+  bool         just_eat_food_ {false};
 private:
   CGrid*       grid_;
   CBackground* background_;

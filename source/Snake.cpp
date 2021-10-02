@@ -3,7 +3,7 @@
 #include "Snake.h"
 
 
-void CSnake::move(DIRECTION t_direction) {
+void CSnake::move(DIRECTION t_direction, bool t_just_eat_food) {
   // TODO: Boundary checking => DONE
   std::unordered_map<DIRECTION, DIRECTION> direction_checker {
     { DIRECTION::UP    , DIRECTION::DOWN},
@@ -38,6 +38,10 @@ void CSnake::move(DIRECTION t_direction) {
     t_direction = this->direction_;
   }
   set_direction(t_direction);
+  if(t_just_eat_food) {
+    body_.insert(body_.begin(), this->head());
+    ++length_;
+  }
   transfer_body();
   set_head(grid_->at(new_head[t_direction]));
 }
