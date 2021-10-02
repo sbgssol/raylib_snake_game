@@ -48,7 +48,7 @@ enum class SPEED {
   _10
 };
 
-enum class IS_BOUNDARY {
+enum class BOUNDARY_STATUS {
   NONE,
   TOP,
   DOWN,

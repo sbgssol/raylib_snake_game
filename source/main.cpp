@@ -99,7 +99,7 @@ int main(void) {
 void InitGame(void) {
   key_pressed = false;
   delete stage;
-  stage = new CStage{ {static_cast<UI32>(screenWidth), static_cast<UI32>(screenHeight), static_cast<UI32>(GRID_SIZE)}, LEVEL::_0 };
+  stage = new CStage{ {static_cast<UI32>(screenHeight), static_cast<UI32>(screenHeight), static_cast<UI32>(GRID_SIZE)}, LEVEL::_0 };
   //stage->dump();
   framesCounter = 0;
   gameOver = false;

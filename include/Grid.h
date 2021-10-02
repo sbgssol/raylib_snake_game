@@ -1,5 +1,6 @@
 #pragma once
 #include <unordered_map>
+#include <unordered_set>
 
 #include "Point.h"
 #include "type_alias.h"
@@ -15,7 +16,7 @@ public:
 
   CPoint* at(UI32 t_id);
   CPoint const& at(UI32 t_id) const;
-  IS_BOUNDARY get_boundary_status(UI32 t_id) const;
+  std::unordered_set<BOUNDARY_STATUS> get_boundary_status(UI32 t_id) const;
   UI32 get_point_id(CPoint* const& t_point) const;
 
   void draw() const;

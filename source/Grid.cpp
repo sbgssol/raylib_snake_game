@@ -39,20 +39,49 @@ CPoint const& CGrid::at(UI32 t_id) const {
   return grid_.at(t_id);
 }
 
-IS_BOUNDARY CGrid::get_boundary_status(UI32 t_id) const {
+std::unordered_set<BOUNDARY_STATUS> CGrid::get_boundary_status(UI32 t_id) const {
+  // BUG: point at corner have 2 status => Depend on direction to choose which boundary
   if (t_id < this->height()           ) {
-    return IS_BOUNDARY::LEFT;
+    std::unordered_set<BOUNDARY_STATUS> result { BOUNDARY_STATUS::LEFT };
+    if (t_id == 0) {
+      result.insert(BOUNDARY_STATUS::TOP);
+    }
+    if(t_id == this->height() - 1) {
+      result.insert(BOUNDARY_STATUS::DOWN);
+    }
+    return result;
   }
   if ((t_id) % this->height() == 0    ) {
-    return IS_BOUNDARY::TOP;
+    std::unordered_set<BOUNDARY_STATUS> result {BOUNDARY_STATUS::TOP};
+    if (t_id == 0) {
+      result.insert(BOUNDARY_STATUS::LEFT);
+    }
+    if (t_id == this->height() * this->width() - this->height()) {
+      result.insert(BOUNDARY_STATUS::RIGHT);
+    }
+    return result;
   }
   if ((t_id + 1) % this->height() == 0) {
-    return IS_BOUNDARY::DOWN;
+    std::unordered_set<BOUNDARY_STATUS> result {BOUNDARY_STATUS::DOWN};
+    if (t_id == 0) {
+      result.insert(BOUNDARY_STATUS::LEFT);
+    }
+    if (t_id == this->height() * this->width() - 1) {
+      result.insert(BOUNDARY_STATUS::RIGHT);
+    }
+    return result;
   }
-  if (t_id > (this->height() * this->width() - this->height())) {
-    return IS_BOUNDARY::RIGHT;
+  if (t_id >= (this->height() * this->width() - this->height())) {
+    std::unordered_set<BOUNDARY_STATUS> result {BOUNDARY_STATUS::RIGHT};
+    if (t_id == this->height() * this->width() - this->height()) {
+      result.insert(BOUNDARY_STATUS::TOP);
+    }
+    if (t_id == this->height() * this->width() - 1) {
+      result.insert(BOUNDARY_STATUS::DOWN);
+    }
+    return result;
   }
-  return IS_BOUNDARY::NONE;
+  return std::unordered_set<BOUNDARY_STATUS>{};
 }
 
 UI32 CGrid::get_point_id(CPoint* const& t_point) const {

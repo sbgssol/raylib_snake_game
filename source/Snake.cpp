@@ -5,6 +5,7 @@
 
 void CSnake::move(DIRECTION t_direction, bool t_just_eat_food) {
   // TODO: Boundary checking => DONE
+  // BUG: Boundary BOTTOM/RIGHT, direction=RIGHT
   std::unordered_map<DIRECTION, DIRECTION> direction_checker {
     { DIRECTION::UP    , DIRECTION::DOWN},
     { DIRECTION::DOWN  , DIRECTION::UP},
@@ -21,17 +22,19 @@ void CSnake::move(DIRECTION t_direction, bool t_just_eat_food) {
   };
 
   auto const boundary_status = grid_->get_boundary_status(grid_->get_point_id(head_));
-  if(boundary_status == IS_BOUNDARY::TOP && t_direction == DIRECTION::UP) {
-    new_head[t_direction] += grid_->height();
-  }
-  if(boundary_status == IS_BOUNDARY::DOWN && t_direction == DIRECTION::DOWN) {
-    new_head[t_direction] -= grid_->height();
-  }
-  if(boundary_status == IS_BOUNDARY::RIGHT && t_direction == DIRECTION::RIGHT) {
-    new_head[t_direction] = head_->y();
-  }
-  if (boundary_status == IS_BOUNDARY::LEFT && t_direction == DIRECTION::LEFT) {
-    new_head[t_direction] = grid_->height() * grid_->width() - grid_->height() + head_->y();
+  if (boundary_status.empty() == false) 	{
+    if (t_direction == DIRECTION::UP && (boundary_status.find(BOUNDARY_STATUS::TOP) != boundary_status.end())) {
+      new_head[t_direction] += grid_->height();
+    }
+    if (t_direction == DIRECTION::DOWN && (boundary_status.find(BOUNDARY_STATUS::DOWN) != boundary_status.end())) {
+      new_head[t_direction] -= grid_->height();
+    }
+    if (t_direction == DIRECTION::RIGHT && (boundary_status.find(BOUNDARY_STATUS::RIGHT) != boundary_status.end())) {
+      new_head[t_direction] = head_->y();
+    }
+    if (t_direction == DIRECTION::LEFT && (boundary_status.find(BOUNDARY_STATUS::LEFT) != boundary_status.end())) {
+      new_head[t_direction] = grid_->height() * grid_->width() - grid_->height() + head_->y();
+    }
   }
 
   if (direction_checker[t_direction] == this->direction_) {
