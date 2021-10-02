@@ -1,4 +1,4 @@
-//#include <functional>
+#include <iostream>
 
 #include "Snake.h"
 
@@ -13,6 +13,9 @@ void CSnake::move(DIRECTION t_direction, bool t_just_eat_food) {
     { DIRECTION::RIGHT , DIRECTION::LEFT}
   };
 
+  if (direction_checker[t_direction] == this->direction_) {
+    t_direction = this->direction_;
+  }
   
   std::unordered_map<DIRECTION, UI32> new_head{
     { DIRECTION::UP    , grid_->get_point_id(head_) - 1},
@@ -37,9 +40,7 @@ void CSnake::move(DIRECTION t_direction, bool t_just_eat_food) {
     }
   }
 
-  if (direction_checker[t_direction] == this->direction_) {
-    t_direction = this->direction_;
-  }
+  //std::cout << __FUNCTION__ << ": direction: " << static_cast<UI32>(t_direction) << ", current head id: " << grid_->get_point_id(head_) << '\n';
   set_direction(t_direction);
   if(t_just_eat_food) {
     body_.insert(body_.begin(), this->head());

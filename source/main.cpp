@@ -65,12 +65,12 @@ CStage* stage;
 // Program main entry point
 //------------------------------------------------------------------------------------
 int main(void) {
-  RRND::Basic::set_seed(std::random_device{}());
+  RRND::Basic::set_seed(0x63f37b69);
   screenHeight = 600;
   screenWidth  = 900;
   GRID_SIZE    = 20;
   
-
+  //std::cout << "random seed: " << std::hex << RRND::Basic::get_seed() << '\n';
   InitWindow(screenWidth, screenHeight, "classic game: snake");
 
   InitGame();
@@ -159,7 +159,7 @@ void UpdateGame(void) {
         allowMove = false;
         d = DIRECTION::DOWN;
         key_pressed = true;
-      }
+      }*/
       if (IsKeyPressed(KEY_R)) {
         SetTargetFPS(240);
       }
@@ -168,7 +168,7 @@ void UpdateGame(void) {
       }
       if(IsKeyPressed(KEY_N)) {
         SetTargetFPS(60);
-      }*/
+      }
       if (IsKeyPressed(KEY_RIGHT)) {
         d = DIRECTION::RIGHT;
         key_pressed = true;

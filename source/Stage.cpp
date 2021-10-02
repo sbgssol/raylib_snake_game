@@ -41,7 +41,6 @@ void CStage::handle_food_collision() {
 }
 
 void CStage::spawn_food() {
-  //init_food();
   delete food_;
   auto is_boundary = [&](UI32 d) -> bool {
     return ((d != 0) && (d != grid_->width() - 1) && (d != grid_->height() - 1));
