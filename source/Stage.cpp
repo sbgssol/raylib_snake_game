@@ -8,7 +8,6 @@ CStage::CStage(SScreenInfo t_screen_info, LEVEL t_level) {
   background_ = new CBackground{ grid_, t_level };
   food_ = init_food();
   snake_ = init_snake();
-
   init_rest_points();
 }
 
@@ -29,6 +28,31 @@ DIRECTION CStage::get_snake_direction() const {
 
 DIRECTION CStage::get_initialized_snake_direction() const {
   return initialized_direction_;
+}
+
+bool CStage::food_collision() const {
+  return snake_->head() == food_->position();
+}
+
+void CStage::handle_food_collision() {
+  spawn_food();
+}
+
+void CStage::spawn_food() {
+  //init_food();
+  delete food_;
+  auto is_boundary = [&](UI32 d) -> bool {
+    return ((d != 0) && (d != grid_->width() - 1) && (d != grid_->height() - 1));
+  };
+  CPoint* point = this->random_point(is_boundary, is_boundary);
+  while(point->type() != POINT_TYPE::SPACE) {
+    point = this->random_point(is_boundary, is_boundary);
+  }
+  food_ = new CFood{ point };
+}
+
+void CStage::increase_snake_length() {
+  this->snake_->increase_length(1U);
 }
 
 void CStage::init_rest_points() {
@@ -103,10 +127,15 @@ CSnake* CStage::init_snake() {
 }
 
 CFood* CStage::init_food() {
+  delete food_;
   auto is_boundary = [&](UI32 d) -> bool {
     return ((d != 0) && (d != grid_->width() - 1) && (d != grid_->height() - 1));
   };
-  return new CFood{ this->random_point(is_boundary, is_boundary) };
+  CPoint* point = this->random_point(is_boundary, is_boundary);
+  while(point->type() != POINT_TYPE::UNDEFINED) {
+    point = this->random_point(is_boundary, is_boundary);
+  }
+  return new CFood{ point };
 }
 
 CPoint* CStage::random_point() const {

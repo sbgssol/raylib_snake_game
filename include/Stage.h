@@ -15,10 +15,14 @@ public:
   void move_snake(DIRECTION t_d);
   DIRECTION get_snake_direction() const;
   DIRECTION get_initialized_snake_direction() const;
+  bool food_collision() const;
+  void handle_food_collision();
 
   void draw() const;
   void dump() const;
 protected:
+  void    spawn_food();
+  void    increase_snake_length();
   CSnake* init_snake();
   CFood*  init_food();
   void    init_rest_points();

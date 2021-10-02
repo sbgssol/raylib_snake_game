@@ -25,7 +25,7 @@ enum class OBSTACLE_NUM {
 };
 
 enum class LEVEL {
-  _0
+  _0,
 };
 
 enum class DIRECTION {

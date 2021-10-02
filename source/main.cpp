@@ -136,7 +136,7 @@ void UpdateGame(void) {
     if (!pause) {
       
       // Player control
-      if (IsKeyPressed(KEY_RIGHT) && (snake[0].speed.x == 0) && allowMove) {
+      /*if (IsKeyPressed(KEY_RIGHT) && (snake[0].speed.x == 0) && allowMove) {
         snake[0].speed = Vector2{ GRID_SIZE, 0 };
         allowMove = false;
         d = DIRECTION::RIGHT;
@@ -168,15 +168,34 @@ void UpdateGame(void) {
       }
       if(IsKeyPressed(KEY_N)) {
         SetTargetFPS(60);
+      }*/
+      if (IsKeyPressed(KEY_RIGHT)) {
+        d = DIRECTION::RIGHT;
+        key_pressed = true;
+      }
+      if (IsKeyPressed(KEY_LEFT)) {
+        d = DIRECTION::LEFT;
+        key_pressed = true;
+      }
+      if (IsKeyPressed(KEY_UP)) {
+        d = DIRECTION::UP;
+        key_pressed = true;
+      }
+      if (IsKeyPressed(KEY_DOWN)) {
+        d = DIRECTION::DOWN;
+        key_pressed = true;
+      }
+      if(stage->food_collision()) {
+        stage->handle_food_collision();
       }
 
       // Snake movement
-      for (int i = 0; i < counterTail; i++) snakePosition[i] = snake[i].position;
-      if ((framesCounter % 5) == 0 && key_pressed) {
+      if ((framesCounter % 5) == 0 && key_pressed) { // TODO: Control speed by framesCounter and modulo
         stage->move_snake(d);
       }
 
-      if ((framesCounter % 5) == 0)             {
+      //for (int i = 0; i < counterTail; i++) snakePosition[i] = snake[i].position;
+      /*if ((framesCounter % 5) == 0)             {
         for (int i = 0; i < counterTail; i++)                 {
           if (i == 0)                     {
             snake[0].position.x += snake[0].speed.x;
@@ -184,7 +203,7 @@ void UpdateGame(void) {
             allowMove = true;
           }                     else snake[i].position = snakePosition[i - 1];
         }
-      }
+      }*/
 
       // Wall behaviour
       if (((snake[0].position.x) > (screenWidth - offset.x)) ||
