@@ -12,7 +12,10 @@ enum class POINT_TYPE {
   OBSTACLE,
   SNAKE_HEAD,
   SNAKE_BODY,
-  SNAKE_TAIL
+  SNAKE_TAIL,
+  PATH_VISITED,
+  PATH_TRAVERSAL,
+  PATH_ADJACENT
 };
 
 enum class DEFAULT {
@@ -51,7 +54,7 @@ enum class SPEED {
 enum class BOUNDARY_STATUS {
   NONE,
   TOP,
-  DOWN,
+  BOTTOM,
   LEFT,
   RIGHT
 };
@@ -80,14 +83,17 @@ static std::unordered_map<POINT_TYPE, char> const G_TYPE_CHAR {
 };
 
 static std::unordered_map<POINT_TYPE, Color> G_TYPE_COLOR{
-  { POINT_TYPE::UNDEFINED  , BLACK     },
-  { POINT_TYPE::SPACE      , WHITE },
-  { POINT_TYPE::FOOD       , ORANGE    },
-  { POINT_TYPE::WALL       , RED       },
-  { POINT_TYPE::OBSTACLE   , DARKBROWN },
-  { POINT_TYPE::SNAKE_HEAD , DARKBLUE  },
-  { POINT_TYPE::SNAKE_BODY , BLUE      },
-  { POINT_TYPE::SNAKE_TAIL , SKYBLUE   }
+  { POINT_TYPE::UNDEFINED      , BLACK     },
+  { POINT_TYPE::SPACE          , WHITE     },
+  { POINT_TYPE::FOOD           , ORANGE    },
+  { POINT_TYPE::WALL           , RED       },
+  { POINT_TYPE::OBSTACLE       , DARKBROWN },
+  { POINT_TYPE::SNAKE_HEAD     , DARKBLUE  },
+  { POINT_TYPE::SNAKE_BODY     , BLUE      },
+  { POINT_TYPE::SNAKE_TAIL     , SKYBLUE   },
+  { POINT_TYPE::PATH_ADJACENT  , VIOLET    },
+  { POINT_TYPE::PATH_TRAVERSAL , PURPLE    },
+  { POINT_TYPE::PATH_VISITED   , BLACK     }
 };
 
 #define watch(x) std::cout << (#x) << ": " << (x) << '\n'

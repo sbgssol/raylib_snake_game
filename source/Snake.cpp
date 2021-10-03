@@ -29,7 +29,7 @@ void CSnake::move(DIRECTION t_direction, bool t_just_eat_food) {
     if (t_direction == DIRECTION::UP && (boundary_status.find(BOUNDARY_STATUS::TOP) != boundary_status.end())) {
       new_head[t_direction] += grid_->height();
     }
-    if (t_direction == DIRECTION::DOWN && (boundary_status.find(BOUNDARY_STATUS::DOWN) != boundary_status.end())) {
+    if (t_direction == DIRECTION::DOWN && (boundary_status.find(BOUNDARY_STATUS::BOTTOM) != boundary_status.end())) {
       new_head[t_direction] -= grid_->height();
     }
     if (t_direction == DIRECTION::RIGHT && (boundary_status.find(BOUNDARY_STATUS::RIGHT) != boundary_status.end())) {
@@ -56,10 +56,6 @@ CPoint* CSnake::head() const {
 
 DIRECTION CSnake::get_direction() const {
   return direction_;
-}
-
-void CSnake::increase_length(UI32 t_len) {
-  
 }
 
 void CSnake::set_head(CPoint* t_head) {

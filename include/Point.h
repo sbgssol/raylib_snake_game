@@ -31,10 +31,11 @@ public:
   
   void draw() const;
   void dump() const;
-
+public:
+  std::vector<CPoint*>    adjacent_;
 private:
-  static UI32 size_; // pixel
-  UI32        x_;
-  UI32        y_;
-  POINT_TYPE  type_;
+  static UI32             size_; // pixel
+  UI32                    x_;
+  UI32                    y_;
+  POINT_TYPE              type_;
 };

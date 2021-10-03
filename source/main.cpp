@@ -54,7 +54,7 @@ static void UnloadGame(void);
 static void UpdateDrawFrame(void);  
 
 float GRID_SIZE = 10;
-int   FPS       = 60;
+int   FPS       = 45;
 
 DIRECTION d = DIRECTION::UP; // Temporary value
 bool key_pressed = false;
@@ -68,7 +68,7 @@ int main(void) {
   RRND::Basic::set_seed(0x63f37b69);
   screenHeight = 600;
   screenWidth  = 900;
-  GRID_SIZE    = 20;
+  GRID_SIZE    = 30;
   
   //std::cout << "random seed: " << std::hex << RRND::Basic::get_seed() << '\n';
   InitWindow(screenWidth, screenHeight, "classic game: snake");

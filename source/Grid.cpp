@@ -47,7 +47,7 @@ std::unordered_set<BOUNDARY_STATUS> CGrid::get_boundary_status(UI32 t_id) const 
       result.insert(BOUNDARY_STATUS::TOP);
     }
     if(t_id == this->height() - 1) {
-      result.insert(BOUNDARY_STATUS::DOWN);
+      result.insert(BOUNDARY_STATUS::BOTTOM);
     }
     return result;
   }
@@ -62,7 +62,7 @@ std::unordered_set<BOUNDARY_STATUS> CGrid::get_boundary_status(UI32 t_id) const 
     return result;
   }
   if ((t_id + 1) % this->height() == 0) {
-    std::unordered_set<BOUNDARY_STATUS> result {BOUNDARY_STATUS::DOWN};
+    std::unordered_set<BOUNDARY_STATUS> result {BOUNDARY_STATUS::BOTTOM};
     if (t_id == 0) {
       result.insert(BOUNDARY_STATUS::LEFT);
     }
@@ -77,7 +77,7 @@ std::unordered_set<BOUNDARY_STATUS> CGrid::get_boundary_status(UI32 t_id) const 
       result.insert(BOUNDARY_STATUS::TOP);
     }
     if (t_id == this->height() * this->width() - 1) {
-      result.insert(BOUNDARY_STATUS::DOWN);
+      result.insert(BOUNDARY_STATUS::BOTTOM);
     }
     return result;
   }

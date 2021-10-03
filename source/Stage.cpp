@@ -9,6 +9,7 @@ CStage::CStage(SScreenInfo t_screen_info, LEVEL t_level) {
   food_ = init_food();
   snake_ = init_snake();
   init_rest_points();
+  init_graph();
 }
 
 CStage::~CStage() {
@@ -50,10 +51,6 @@ void CStage::spawn_food() {
     point = this->random_point(is_boundary, is_boundary);
   }
   food_ = new CFood{ point };
-}
-
-void CStage::increase_snake_length() {
-  this->snake_->increase_length(1U);
 }
 
 void CStage::init_rest_points() {
@@ -150,4 +147,81 @@ CPoint* CStage::random_point(std::function<bool(UI32)> t_x_constraint, std::func
     p = this->random_point();
   }
   return p;
+}
+
+void CStage::init_graph() {
+  auto insert_adj = [=](CPoint* source, CPoint* adj) -> void {
+    source->adjacent_.push_back(adj);
+  };
+  for(UI32 id = 0; id < (grid_->height() * grid_->width()); ++id) {
+    CPoint* p = grid_->at(id);    
+    auto boundary_status = grid_->get_boundary_status(id);
+    // handle normal cases
+    if (boundary_status.empty()) {
+      insert_adj(p, grid_->at(id - 1));
+      insert_adj(p, grid_->at(id + 1));
+      insert_adj(p, grid_->at(id - grid_->height()));
+      insert_adj(p, grid_->at(id + grid_->height()));
+    }
+    // handle for boundary cases
+    if (boundary_status.empty() == false) {
+      // handle for 4 corners
+      if (boundary_status.size() == 2) {
+        // top left
+        if (boundary_status.find(BOUNDARY_STATUS::TOP) != boundary_status.end() &&
+            boundary_status.find(BOUNDARY_STATUS::LEFT) != boundary_status.end()) {
+          insert_adj(p, grid_->at(id + 1));
+          insert_adj(p, grid_->at(id + grid_->height()));
+        }
+        // top right
+        if (boundary_status.find(BOUNDARY_STATUS::TOP) != boundary_status.end() &&
+            boundary_status.find(BOUNDARY_STATUS::RIGHT) != boundary_status.end()) {
+          insert_adj(p, grid_->at(id + 1));
+          insert_adj(p, grid_->at(id - grid_->height()));
+        }
+        // bottom left
+        if (boundary_status.find(BOUNDARY_STATUS::BOTTOM) != boundary_status.end() &&
+            boundary_status.find(BOUNDARY_STATUS::LEFT) != boundary_status.end()) {
+          insert_adj(p, grid_->at(id - 1));
+          insert_adj(p, grid_->at(id + grid_->height()));
+        }
+        // bottom right
+        if (boundary_status.find(BOUNDARY_STATUS::BOTTOM) != boundary_status.end() &&
+            boundary_status.find(BOUNDARY_STATUS::RIGHT) != boundary_status.end()) {
+          insert_adj(p, grid_->at(id - 1));
+          insert_adj(p, grid_->at(id - grid_->height()));
+        }
+      }
+      // handle for edges
+      if(boundary_status.size() == 1) {
+        // top
+        if(boundary_status.find(BOUNDARY_STATUS::TOP) != boundary_status.end()) {
+          insert_adj(p, grid_->at(id - grid_->height()));
+          insert_adj(p, grid_->at(id + 1));
+          insert_adj(p, grid_->at(id + grid_->height()));
+        }
+        // bottom
+        if (boundary_status.find(BOUNDARY_STATUS::BOTTOM) != boundary_status.end()) {
+          insert_adj(p, grid_->at(id - grid_->height()));
+          insert_adj(p, grid_->at(id - 1));
+          insert_adj(p, grid_->at(id + grid_->height()));
+        }
+        // left
+        if (boundary_status.find(BOUNDARY_STATUS::LEFT) != boundary_status.end()) {
+          insert_adj(p, grid_->at(id - 1));
+          insert_adj(p, grid_->at(id + grid_->height()));
+          insert_adj(p, grid_->at(id + 1));
+        }
+        // right
+        if (boundary_status.find(BOUNDARY_STATUS::RIGHT) != boundary_status.end()) {
+          insert_adj(p, grid_->at(id - 1));
+          insert_adj(p, grid_->at(id - grid_->height()));
+          insert_adj(p, grid_->at(id + 1));
+        }
+      }
+    }
+    //for(auto ad : p->adjacent_) {
+    //  ad->set_type(POINT_TYPE::PATH_ADJACENT);
+    //}
+  }
 }

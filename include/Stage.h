@@ -22,12 +22,12 @@ public:
   void dump() const;
 protected:
   void    spawn_food();
-  void    increase_snake_length();
   CSnake* init_snake();
   CFood*  init_food();
   void    init_rest_points();
   CPoint* random_point() const;
   CPoint* random_point(std::function<bool(UI32)> t_x_constraint, std::function<bool(UI32)> t_y_constraint) const;
+  void    init_graph();
 
   DIRECTION    initialized_direction_{ DIRECTION::UP };
   bool         just_eat_food_ {false};

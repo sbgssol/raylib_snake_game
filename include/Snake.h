@@ -23,7 +23,6 @@ public:
   void move(DIRECTION t_direction, bool t_just_eat_food);
   CPoint* head() const;
   DIRECTION get_direction() const;
-  void increase_length(UI32 t_len);
   
 protected:
   void set_head(CPoint* t_head);
