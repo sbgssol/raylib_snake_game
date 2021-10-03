@@ -225,3 +225,45 @@ void CStage::init_graph() {
     //}
   }
 }
+
+void CStage::expand_frontier() {
+  if(frontier_initialized && frontier_.empty()) {
+    return;
+  }
+  if(frontier_.empty()) {
+    for(auto adj : snake_->head()->adjacent_) {
+      if (adj->type() == POINT_TYPE::SPACE ||
+          adj->type() == POINT_TYPE::FOOD) {
+        frontier_.push(adj);
+      }
+    }
+    frontier_initialized = true;
+  }
+
+  frontier_.front()->set_type(POINT_TYPE::PATH_VISITED);
+  CPoint* p = frontier_.front();
+  frontier_.pop();
+  bool found = false;
+  for(auto adj : p->adjacent_) {
+    if(adj->type() == POINT_TYPE::SPACE ||
+       adj->type() == POINT_TYPE::FOOD) {
+      adj->parents_ = p;
+      if(adj == food_->position()) {
+        found = true;
+        std::queue<CPoint*> q;
+        std::swap(frontier_, q);
+        break;
+      }
+      adj->set_type(POINT_TYPE::PATH_ADJACENT);
+      frontier_.push(adj);
+    }    
+  }
+
+  if(found) {
+    CPoint* current = food_->position()->parents_;
+    while(current) {
+      current->set_type(POINT_TYPE::PATH_FOUND_PATH);
+      current = current->parents_;
+    }
+  }
+}

@@ -33,6 +33,7 @@ public:
   void dump() const;
 public:
   std::vector<CPoint*>    adjacent_;
+  CPoint*                 parents_{ nullptr };
 private:
   static UI32             size_; // pixel
   UI32                    x_;

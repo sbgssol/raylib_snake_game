@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <queue>
 
 #include "Grid.h"
 #include "Background.h"
@@ -17,6 +18,7 @@ public:
   DIRECTION get_initialized_snake_direction() const;
   bool food_collision() const;
   void handle_food_collision();
+  void expand_frontier();
 
   void draw() const;
   void dump() const;
@@ -29,6 +31,8 @@ protected:
   CPoint* random_point(std::function<bool(UI32)> t_x_constraint, std::function<bool(UI32)> t_y_constraint) const;
   void    init_graph();
 
+  std::queue<CPoint*> frontier_;
+  bool frontier_initialized{ false };
   DIRECTION    initialized_direction_{ DIRECTION::UP };
   bool         just_eat_food_ {false};
 private:

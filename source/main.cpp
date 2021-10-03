@@ -54,7 +54,7 @@ static void UnloadGame(void);
 static void UpdateDrawFrame(void);  
 
 float GRID_SIZE = 10;
-int   FPS       = 45;
+int   FPS       = 60;
 
 DIRECTION d = DIRECTION::UP; // Temporary value
 bool key_pressed = false;
@@ -191,7 +191,8 @@ void UpdateGame(void) {
 
       // Snake movement
       if ((framesCounter % 5) == 0 && key_pressed) { // TODO: Control speed by framesCounter and modulo
-        stage->move_snake(d);
+        //stage->move_snake(d);
+        stage->expand_frontier();
       }
 
       //for (int i = 0; i < counterTail; i++) snakePosition[i] = snake[i].position;
