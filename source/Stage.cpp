@@ -272,11 +272,15 @@ void CStage::use_dijkstra() {
     frontier_initialized_ = true;
   }
 
+  dijsktra_frontier_.sort([](CPoint* p1, CPoint* p2) {
+    return p1->cost_so_far_ < p2->cost_so_far_;
+  });
+
   CPoint* p = dijsktra_frontier_.front();
   dijsktra_frontier_.erase(dijsktra_frontier_.begin());
-  UI32 new_cost = 0;
   
-  if (dijkstra_visited.find(p) == dijkstra_visited.end()) 	{
+  if (dijkstra_visited.find(p) == dijkstra_visited.end()) {
+    UI32 new_cost = 0;
     for (auto adj : p->adjacent_) {
       new_cost = p->cost_so_far_ + 1 /*1 == cost from point to point*/;
       if (dijkstra_visited.find(adj) == dijkstra_visited.end() || (new_cost < adj->cost_so_far_)) {

@@ -25,7 +25,7 @@ enum class DEFAULT {
 };
 
 enum class OBSTACLE_NUM {
-  LEVEL_0 =  25
+  LEVEL_0 =  30
 };
 
 enum class LEVEL {
