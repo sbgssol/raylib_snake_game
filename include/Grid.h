@@ -12,7 +12,8 @@ public:
 
   UI32 width() const;
   UI32 height() const;
-  UI32 grid_size() const;  
+  UI32 grid_size() const;
+  UI32 maximum_point_id() const;
 
   CPoint* at(UI32 t_id);
   CPoint const& at(UI32 t_id) const;

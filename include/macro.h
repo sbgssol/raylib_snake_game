@@ -15,7 +15,8 @@ enum class POINT_TYPE {
   SNAKE_TAIL,
   PATH_VISITED,
   PATH_FOUND_PATH,
-  PATH_ADJACENT
+  PATH_ADJACENT,
+  PATH_CURRENT
 };
 
 enum class DEFAULT {
@@ -24,7 +25,7 @@ enum class DEFAULT {
 };
 
 enum class OBSTACLE_NUM {
-  LEVEL_0 =  0
+  LEVEL_0 =  25
 };
 
 enum class LEVEL {
@@ -92,8 +93,9 @@ static std::unordered_map<POINT_TYPE, Color> G_TYPE_COLOR{
   { POINT_TYPE::SNAKE_BODY     , BLUE      },
   { POINT_TYPE::SNAKE_TAIL     , SKYBLUE   },
   { POINT_TYPE::PATH_ADJACENT  , VIOLET    },
-  { POINT_TYPE::PATH_FOUND_PATH , PURPLE    },
-  { POINT_TYPE::PATH_VISITED   , BLACK     }
+  { POINT_TYPE::PATH_FOUND_PATH, PURPLE    },
+  { POINT_TYPE::PATH_VISITED   , BLACK     },
+  { POINT_TYPE::PATH_CURRENT   , RED       }
 };
 
 #define watch(x) std::cout << (#x) << ": " << (x) << '\n'

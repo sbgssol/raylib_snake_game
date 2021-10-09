@@ -18,7 +18,7 @@ protected:
   void init_obstacle();
 private:
   CGrid* grid_;
-  LEVEL level_;
+  LEVEL level_ {LEVEL::_0};
   std::unordered_map<UI32, CPoint*> wall_;
   std::unordered_map<UI32, CPoint*> obstacle_;
 };

@@ -25,6 +25,10 @@ UI32 CGrid::grid_size() const {
   return grid_size_;
 }
 
+UI32 CGrid::maximum_point_id() const {
+  return (height() * width() - 1);
+}
+
 void CGrid::draw() const {
   for (auto const& p : grid_) {
     p.second.draw();
@@ -40,7 +44,7 @@ CPoint const& CGrid::at(UI32 t_id) const {
 }
 
 std::unordered_set<BOUNDARY_STATUS> CGrid::get_boundary_status(UI32 t_id) const {
-  // BUG: point at corner have 2 status => Depend on direction to choose which boundary
+  // BUG: point at corner have 2 status => Depend on direction to choose which boundary => DONE
   if (t_id < this->height()           ) {
     std::unordered_set<BOUNDARY_STATUS> result { BOUNDARY_STATUS::LEFT };
     if (t_id == 0) {
@@ -66,7 +70,7 @@ std::unordered_set<BOUNDARY_STATUS> CGrid::get_boundary_status(UI32 t_id) const 
     if (t_id == 0) {
       result.insert(BOUNDARY_STATUS::LEFT);
     }
-    if (t_id == this->height() * this->width() - 1) {
+    if (t_id == maximum_point_id()) {
       result.insert(BOUNDARY_STATUS::RIGHT);
     }
     return result;
@@ -76,7 +80,7 @@ std::unordered_set<BOUNDARY_STATUS> CGrid::get_boundary_status(UI32 t_id) const 
     if (t_id == this->height() * this->width() - this->height()) {
       result.insert(BOUNDARY_STATUS::TOP);
     }
-    if (t_id == this->height() * this->width() - 1) {
+    if (t_id == maximum_point_id()) {
       result.insert(BOUNDARY_STATUS::BOTTOM);
     }
     return result;

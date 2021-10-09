@@ -65,6 +65,7 @@ CStage* stage;
 // Program main entry point
 //------------------------------------------------------------------------------------
 int main(void) {
+  //RRND::Basic::set_seed(std::random_device{}());
   RRND::Basic::set_seed(0x63f37b69);
   screenHeight = 600;
   screenWidth  = 900;
@@ -161,7 +162,7 @@ void UpdateGame(void) {
         key_pressed = true;
       }*/
       if (IsKeyPressed(KEY_R)) {
-        SetTargetFPS(240);
+        gameOver = true;
       }
       if(IsKeyPressed(KEY_T)) {
         SetTargetFPS(120);
@@ -189,10 +190,13 @@ void UpdateGame(void) {
         stage->handle_food_collision();
       }
 
+      if (1) 	{
+        stage->expand_frontier();
+      }
       // Snake movement
       if ((framesCounter % 5) == 0 && key_pressed) { // TODO: Control speed by framesCounter and modulo
         //stage->move_snake(d);
-        stage->expand_frontier();
+        
       }
 
       //for (int i = 0; i < counterTail; i++) snakePosition[i] = snake[i].position;

@@ -4,36 +4,30 @@
 
 class CPoint {
 public:
-  CPoint(UI32 const t_x, UI32 const t_y, POINT_TYPE const t_type)
-    : x_(t_x),
-      y_(t_y),
-      type_(t_type) {
-  }
+  // static method
+  static void set_size(UI32 t_size);
 
-  UI32 x() const {
-    return x_;
-  }
-  UI32 y() const {
-    return y_;
-  }
+  // constructors
+  CPoint(UI32 const t_x, UI32 const t_y, POINT_TYPE const t_type);
 
-  POINT_TYPE type() const {
-    return type_;
-  }
+  // getter methods
+  UI32       x() const;
+  UI32       y() const;
+  POINT_TYPE type() const;
+  bool       is_reachable() const;
+  bool is_modifiable_type() const;
 
-  static void set_size(UI32 t_size) {
-    size_ = t_size;
-  }
+  // setter methods
+  void set_type(POINT_TYPE t_type);
 
-  void set_type(POINT_TYPE t_type) {
-    type_ = t_type;
-  }
-  
+  // dump methods
   void draw() const;
   void dump() const;
+  std::string to_string() const;
 public:
   std::vector<CPoint*>    adjacent_;
   CPoint*                 parents_{ nullptr };
+  UI32                    cost_so_far_{ 9999 };
 private:
   static UI32             size_; // pixel
   UI32                    x_;
