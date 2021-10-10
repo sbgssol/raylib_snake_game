@@ -32,7 +32,7 @@ DIRECTION CStage::get_initialized_snake_direction() const {
   return initialized_direction_;
 }
 
-bool CStage::food_collision() const {
+bool CStage::is_food_collided() const {
   return snake_->head() == food_->position();
 }
 
@@ -62,16 +62,12 @@ void CStage::init_rest_points() {
 }
 
 void CStage::draw() const {
-  this->grid_->draw();
-  this->food_->position()->draw();
-  this->snake_->draw();
-  this->background_->draw();
-
-  if (shortest_path_.empty() == false) 	{
-    for (auto p : shortest_path_) {
-      p->draw();
-    }   
-  }
+  grid_->draw_full();
+  //draw_grid();
+  //draw_food();
+  //draw_snake();
+  //draw_path();
+  //draw_obstacles();
 }
 
 void CStage::dump() const {
@@ -347,6 +343,61 @@ void CStage::use_dfs() {
   }
 }
 
+void CStage::use_a_star() {
+  if (frontier_initialized_ && astar_frontier_.empty()) {
+    //shortest_path_.clear();
+    return;
+  }
+  if (astar_frontier_.empty()) {
+    // initialize heuristic value
+    grid_->calculate_heuristic_value(food_->position());
+
+    for (auto adj : snake_->head()->adjacent_) {
+      adj->cost_so_far_ = 1;
+      astar_frontier_.push_back(adj);
+    }
+    frontier_initialized_ = true;
+  }
+
+  astar_frontier_.sort([](CPoint* p1, CPoint* p2) {
+    return (p1->cost_so_far_ + p1->heuristic_value_) < (p2->cost_so_far_ + p2->heuristic_value_);
+  });
+  watch(astar_frontier_.size());
+
+  CPoint* p = astar_frontier_.front();
+  //p->dump();
+  astar_frontier_.erase(astar_frontier_.begin());
+
+  if (astar_visited_.find(p) == astar_visited_.end()) {
+    float new_cost = 0;
+    for (auto adj : p->adjacent_) {
+      new_cost = p->cost_so_far_ + 1 + adj->heuristic_value_ /*1 == cost from point to point*/;
+      if (astar_visited_.find(adj) == astar_visited_.end() || (new_cost < adj->cost_so_far_ + adj->heuristic_value_)) {
+        adj->cost_so_far_ = new_cost;
+        adj->parents_ = p;
+        if (adj == food_->position()) {
+          food_found_ = true;
+          decltype(astar_frontier_) q;
+          std::swap(astar_frontier_, q);
+          break;
+        }
+        if (adj->is_modifiable_type()) {
+          adj->set_type(POINT_TYPE::PATH_ADJACENT);
+        }
+        astar_frontier_.push_back(adj);
+      }
+    }
+  }
+
+  astar_visited_.insert(p);
+  watch(astar_frontier_.size());
+  watch(astar_visited_.size());
+
+  if (p->is_modifiable_type()) {
+    p->set_type(POINT_TYPE::PATH_VISITED);
+  }
+}
+
 void CStage::trace_path() {
   if (food_found_) {
     CPoint* current = food_->position()->parents_;
@@ -359,9 +410,34 @@ void CStage::trace_path() {
   }
 }
 
+void CStage::draw_grid() const {
+  grid_->draw();
+}
+
+void CStage::draw_food() const {
+  food_->position()->draw();
+}
+
+void CStage::draw_snake() const {
+  snake_->draw();
+}
+
+void CStage::draw_path() const {
+  if (shortest_path_.empty() == false) {
+    for (auto p : shortest_path_) {
+      p->draw();
+    }
+  }
+}
+
+void CStage::draw_obstacles() const {
+  background_->draw();
+}
+
 void CStage::expand_frontier() {
   //use_bfs();
   //use_dfs();
-  use_dijkstra();
+  //use_dijkstra();
+  use_a_star();
   trace_path();
 }

@@ -20,7 +20,7 @@ protected:
 private:
   CGrid* grid_;
   LEVEL level_ {LEVEL::_0};
-  std::unordered_map<UI32, CPoint*> wall_;
+  std::vector<CPoint*> wall_;
   std::vector<CPoint*> obstacle_;
 };
 

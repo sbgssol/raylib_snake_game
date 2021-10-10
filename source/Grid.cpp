@@ -29,19 +29,29 @@ UI32 CGrid::maximum_point_id() const {
   return (height() * width() - 1);
 }
 
+void CGrid::calculate_heuristic_value(CPoint* t_food_position) {
+  use_euclidean_distance(t_food_position);
+}
+
 //TODO Improve this function to increase FPS: background::draw = draw line only
 void CGrid::draw() const {
   
   for(UI32 x = 1; x < width(); ++x) {
-    auto start_pos = Vector2{ (float)0, (float)(x * grid_size()) };
-    auto end_pos   = Vector2{ (float)height() * grid_size(),(float)(x * grid_size()) };
+    auto start_pos = Vector2{ static_cast<float>(0), static_cast<float>(x * grid_size()) };
+    auto end_pos   = Vector2{ static_cast<float>(height()) * grid_size(),static_cast<float>(x * grid_size()) };
     DrawLineV(start_pos, end_pos, DARKGRAY);
   }
 
   for (UI32 y = 1; y <= height(); ++y) {
-    auto start_pos = Vector2{ (float)(y * grid_size()), 0 };
-    auto end_pos = Vector2{ (float)y * grid_size(),(float)(width() * grid_size()) };
+    auto start_pos = Vector2{ static_cast<float>(y * grid_size()), 0 };
+    auto end_pos = Vector2{ static_cast<float>(y) * grid_size(),static_cast<float>(width() * grid_size()) };
     DrawLineV(start_pos, end_pos, DARKGRAY);
+  }
+}
+
+void CGrid::draw_full() const {
+  for(auto p : grid_) {
+    p.second.draw();
   }
 }
 
@@ -116,6 +126,19 @@ void CGrid::init_grid() {
       UI32 id = x * this->height() + y;
       //std::cout << __FUNCTION__ << " - (" << x << ", " << y << "): " << id << '\n';
       grid_.insert(std::make_pair(id, CPoint{ x, y, POINT_TYPE::UNDEFINED }));
+    }
+  }
+}
+
+void CGrid::use_manhattan_distance(CPoint* t_food_position) {
+}
+
+void CGrid::use_euclidean_distance(CPoint* t_food_position) {
+  for(auto& p : grid_) {
+    if(p.second.is_reachable()) {
+      float x_dis = std::pow(static_cast<SI32>(p.second.x()) - static_cast<SI32>(t_food_position->x()), 2);
+      float y_dis = std::pow(static_cast<SI32>(p.second.y()) - static_cast<SI32>(t_food_position->y()), 2);
+      p.second.heuristic_value_ = std::sqrt(x_dis + y_dis);
     }
   }
 }

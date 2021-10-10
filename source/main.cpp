@@ -144,7 +144,7 @@ void UpdateGame(void) {
         d = DIRECTION::DOWN;
         key_pressed = true;
       }
-      if (stage->food_collision()) {
+      if (stage->is_food_collided()) {
         stage->handle_food_collision();
       }
 

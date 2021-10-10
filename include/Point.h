@@ -16,7 +16,7 @@ public:
   UI32       y() const;
   POINT_TYPE type() const;
   bool       is_reachable() const;
-  bool is_modifiable_type() const;
+  bool       is_modifiable_type() const;
 
   // setter methods
   void set_type(POINT_TYPE t_type);
@@ -28,7 +28,8 @@ public:
 public:
   std::vector<CPoint*>    adjacent_;
   CPoint*                 parents_{ nullptr };
-  UI32                    cost_so_far_{ 9999 };
+  float                   cost_so_far_{ 9999 };
+  float                   heuristic_value_{9999};
 private:
   static UI32             size_; // pixel
   UI32                    x_;

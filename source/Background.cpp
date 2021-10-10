@@ -5,12 +5,12 @@
 #include "ratio_random.h"
 
 void CBackground::draw() const {
-  for(auto p : wall_) {
-    p.second->draw();
+  for(UI32 i = 0; i < wall_.size(); ++i) {
+    wall_[i]->draw();
   }
 
-  for (auto p : obstacle_) {
-    p->draw();
+  for (UI32 i = 0; i < obstacle_.size(); ++i) {
+    obstacle_[i]->draw();
   }
 }
 
