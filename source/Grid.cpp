@@ -29,9 +29,19 @@ UI32 CGrid::maximum_point_id() const {
   return (height() * width() - 1);
 }
 
+//TODO Improve this function to increase FPS: background::draw = draw line only
 void CGrid::draw() const {
-  for (auto const& p : grid_) {
-    p.second.draw();
+  
+  for(UI32 x = 1; x < width(); ++x) {
+    auto start_pos = Vector2{ (float)0, (float)(x * grid_size()) };
+    auto end_pos   = Vector2{ (float)height() * grid_size(),(float)(x * grid_size()) };
+    DrawLineV(start_pos, end_pos, DARKGRAY);
+  }
+
+  for (UI32 y = 1; y <= height(); ++y) {
+    auto start_pos = Vector2{ (float)(y * grid_size()), 0 };
+    auto end_pos = Vector2{ (float)y * grid_size(),(float)(width() * grid_size()) };
+    DrawLineV(start_pos, end_pos, DARKGRAY);
   }
 }
 

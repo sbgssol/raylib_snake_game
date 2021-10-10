@@ -4,6 +4,16 @@
 #include "Background.h"
 #include "ratio_random.h"
 
+void CBackground::draw() const {
+  for(auto p : wall_) {
+    p.second->draw();
+  }
+
+  for (auto p : obstacle_) {
+    p->draw();
+  }
+}
+
 void CBackground::init_wall() {
   wall_.clear();
   switch (level_) {
@@ -34,6 +44,7 @@ void CBackground::init_obstacle() {
           p = grid_->at(RRND::Basic::random(0U, maximum_point_id));
         }
         p->set_type(POINT_TYPE::OBSTACLE);
+        obstacle_.push_back(p);
       }
     }
     default:

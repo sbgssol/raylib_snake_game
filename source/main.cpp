@@ -80,7 +80,7 @@ int main(void) {
 
   InitGame();
 
-  SetTargetFPS(FPS);
+  //SetTargetFPS(FPS);
 
 
   // Main game loop
@@ -110,30 +110,7 @@ void InitGame(void) {
   //stage->dump();
   framesCounter = 0;
   gameOver = false;
-  pause = false;
-
-  counterTail = 1;
-  allowMove = false;
-
-  offset.x = screenWidth % static_cast<int>(GRID_SIZE);
-  offset.y = screenHeight % static_cast<int>(GRID_SIZE);
-
-  for (int i = 0; i < SNAKE_LENGTH; i++) {
-    snake[i].position = Vector2{offset.x / 2, offset.y / 2};
-    snake[i].size = Vector2{GRID_SIZE, GRID_SIZE};
-    snake[i].speed = Vector2{GRID_SIZE, 0};
-
-    if (i == 0) snake[i].color = DARKBLUE;
-    else snake[i].color = BLUE;
-  }
-
-  for (int i = 0; i < SNAKE_LENGTH; i++) {
-    snakePosition[i] = Vector2{0.0f, 0.0f};
-  }
-
-  fruit.size = Vector2{GRID_SIZE, GRID_SIZE};
-  fruit.color = SKYBLUE;
-  fruit.active = false;
+  pause = false;  
 }
 
 // Update game (one frame)
@@ -142,32 +119,6 @@ void UpdateGame(void) {
     if (IsKeyPressed('P')) pause = !pause;
 
     if (!pause) {
-
-      // Player control
-      /*if (IsKeyPressed(KEY_RIGHT) && (snake[0].speed.x == 0) && allowMove) {
-        snake[0].speed = Vector2{ GRID_SIZE, 0 };
-        allowMove = false;
-        d = DIRECTION::RIGHT;
-        key_pressed = true;
-      }
-      if (IsKeyPressed(KEY_LEFT) && (snake[0].speed.x == 0) && allowMove) {
-        snake[0].speed = Vector2{ -GRID_SIZE, 0 };
-        allowMove = false;
-        d = DIRECTION::LEFT;
-        key_pressed = true;
-      }
-      if (IsKeyPressed(KEY_UP) && (snake[0].speed.y == 0) && allowMove) {
-        snake[0].speed = Vector2{ 0, -GRID_SIZE };
-        allowMove = false;
-        d = DIRECTION::UP;
-        key_pressed = true;
-      }
-      if (IsKeyPressed(KEY_DOWN) && (snake[0].speed.y == 0) && allowMove) {
-        snake[0].speed = Vector2{ 0, GRID_SIZE };
-        allowMove = false;
-        d = DIRECTION::DOWN;
-        key_pressed = true;
-      }*/
       if (IsKeyPressed(KEY_R)) {
         gameOver = true;
       }
@@ -201,66 +152,12 @@ void UpdateGame(void) {
         stage->expand_frontier();
       }
       // Snake movement
-      if ((framesCounter % 5) == 0 && key_pressed) {
+      if ((framesCounter % 500) == 0 && key_pressed) {
         // TODO: Control speed by framesCounter and modulo
         //stage->move_snake(d);
 
       }
-
-      //for (int i = 0; i < counterTail; i++) snakePosition[i] = snake[i].position;
-      /*if ((framesCounter % 5) == 0)             {
-        for (int i = 0; i < counterTail; i++)                 {
-          if (i == 0)                     {
-            snake[0].position.x += snake[0].speed.x;
-            snake[0].position.y += snake[0].speed.y;
-            allowMove = true;
-          }                     else snake[i].position = snakePosition[i - 1];
-        }
-      }*/
-
-      // Wall behaviour
-      if (((snake[0].position.x) > (screenWidth - offset.x)) ||
-        ((snake[0].position.y) > (screenHeight - offset.y)) ||
-        (snake[0].position.x < 0) || (snake[0].position.y < 0)) {
-        gameOver = true;
-      }
-
-      // Collision with yourself
-      for (int i = 1; i < counterTail; i++) {
-        if ((snake[0].position.x == snake[i].position.x) && (snake[0].position.y == snake[i].position.y))
-          gameOver =
-            true;
-      }
-
-      // Fruit position calculation
-      if (!fruit.active) {
-        fruit.active = true;
-        fruit.position = Vector2{
-        GetRandomValue(0, (screenWidth / GRID_SIZE) - 1) * GRID_SIZE + offset.x / 2,
-        GetRandomValue(0, (screenHeight / GRID_SIZE) - 1) * GRID_SIZE + offset.y / 2
-        };
-
-        for (int i = 0; i < counterTail; i++) {
-          while ((fruit.position.x == snake[i].position.x) && (fruit.position.y == snake[i].position.y)) {
-            fruit.position = Vector2{
-            GetRandomValue(0, (screenWidth / GRID_SIZE) - 1) * GRID_SIZE + offset.x / 2,
-            GetRandomValue(0, (screenHeight / GRID_SIZE) - 1) * GRID_SIZE + offset.y / 2
-            };
-            i = 0;
-          }
-        }
-      }
-
-      // Collision
-      if ((snake[0].position.x < (fruit.position.x + fruit.size.x) && (snake[0].position.x + snake[0].size.x) > fruit.
-          position.x) &&
-        (snake[0].position.y < (fruit.position.y + fruit.size.y) && (snake[0].position.y + snake[0].size.y) > fruit.
-          position.y)) {
-        snake[counterTail].position = snakePosition[counterTail - 1];
-        counterTail += 1;
-        fruit.active = false;
-      }
-
+      
       framesCounter++;
     }
   } else {
@@ -275,18 +172,14 @@ void UpdateGame(void) {
 void DrawGame(void) {
   BeginDrawing();
 
-  ClearBackground(DARKGRAY);
+  ClearBackground(LIGHTGRAY);
 
   if (!gameOver) {
     stage->draw();
-
-    // Draw snake
-    for (int i = 0; i < counterTail; i++) DrawRectangleV(snake[i].position, snake[i].size, snake[i].color);
-
-    // Draw fruit to pick
-    DrawRectangleV(fruit.position, fruit.size, fruit.color);
-
-
+    auto fps = GetFPS();
+    std::string fps_str = std::to_string(fps) + " FPS";
+    DrawText(fps_str.c_str(), 30, 30, 30, RED);
+    
     if (pause)
       DrawText("GAME PAUSED", screenWidth / 2 - MeasureText("GAME PAUSED", 40) / 2, screenHeight / 2 - 40, 40,
                GRAY);

@@ -22,7 +22,9 @@ public:
 
   void move(DIRECTION t_direction, bool t_just_eat_food);
   CPoint* head() const;
+  CPoint* tail() const;
   DIRECTION get_direction() const;
+  void draw() const;
   
 protected:
   void set_head(CPoint* t_head);

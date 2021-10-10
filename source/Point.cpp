@@ -44,6 +44,10 @@ void CPoint::set_size(UI32 t_size) {
     size_ = t_size;
 }
 
+UI32 CPoint::get_size() {
+  return size_;
+}
+
 void CPoint::set_type(POINT_TYPE t_type) {
   this->type_ = t_type;
 }

@@ -54,8 +54,20 @@ CPoint* CSnake::head() const {
   return head_;
 }
 
+CPoint* CSnake::tail() const {
+  return tail_;
+}
+
 DIRECTION CSnake::get_direction() const {
   return direction_;
+}
+
+void CSnake::draw() const {
+  head_->draw();
+  tail_->draw();
+  for(auto p : body_) {
+    p->draw();
+  }
 }
 
 void CSnake::set_head(CPoint* t_head) {

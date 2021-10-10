@@ -42,6 +42,7 @@ protected:
   std::queue<CPoint*>          bfs_frontier_;
   std::list<CPoint*>           dijsktra_frontier_;
   std::unordered_set<CPoint*>  dijkstra_visited;
+  std::vector<CPoint*>         shortest_path_;
   
   bool                frontier_initialized_{ false };
   bool                food_found_{ false };

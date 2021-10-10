@@ -6,6 +6,7 @@ class CPoint {
 public:
   // static method
   static void set_size(UI32 t_size);
+  static UI32 get_size();
 
   // constructors
   CPoint(UI32 const t_x, UI32 const t_y, POINT_TYPE const t_type);

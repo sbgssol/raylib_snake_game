@@ -63,6 +63,15 @@ void CStage::init_rest_points() {
 
 void CStage::draw() const {
   this->grid_->draw();
+  this->food_->position()->draw();
+  this->snake_->draw();
+  this->background_->draw();
+
+  if (shortest_path_.empty() == false) 	{
+    for (auto p : shortest_path_) {
+      p->draw();
+    }   
+  }
 }
 
 void CStage::dump() const {
@@ -261,7 +270,7 @@ void CStage::use_bfs() {
 
 void CStage::use_dijkstra() {
   if (frontier_initialized_ && dijsktra_frontier_.empty()) {
-    //food_found_ = true;
+    //shortest_path_.clear();
     return;
   }
   if (dijsktra_frontier_.empty()) {
@@ -343,6 +352,7 @@ void CStage::trace_path() {
     CPoint* current = food_->position()->parents_;
     while (current) {
       current->set_type(POINT_TYPE::PATH_FOUND_PATH);
+      shortest_path_.push_back(current);
       current = current->parents_;
     }
     food_found_ = false;
