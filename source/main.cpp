@@ -73,7 +73,7 @@ int main(void) {
   //RRND::Basic::set_seed(0x63f37b69);
   screenHeight = 600;
   screenWidth = 900;
-  GRID_SIZE = 30;
+  GRID_SIZE = 40;
 
   //std::cout << "random seed: " << std::hex << RRND::Basic::get_seed() << '\n';
   InitWindow(screenWidth, screenHeight, "classic game: snake");

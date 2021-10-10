@@ -362,7 +362,7 @@ void CStage::use_a_star() {
   astar_frontier_.sort([](CPoint* p1, CPoint* p2) {
     return (p1->cost_so_far_ + p1->heuristic_value_) < (p2->cost_so_far_ + p2->heuristic_value_);
   });
-  watch(astar_frontier_.size());
+  //watch(astar_frontier_.size());
 
   CPoint* p = astar_frontier_.front();
   //p->dump();
@@ -390,8 +390,8 @@ void CStage::use_a_star() {
   }
 
   astar_visited_.insert(p);
-  watch(astar_frontier_.size());
-  watch(astar_visited_.size());
+  //watch(astar_frontier_.size());
+  //watch(astar_visited_.size());
 
   if (p->is_modifiable_type()) {
     p->set_type(POINT_TYPE::PATH_VISITED);
