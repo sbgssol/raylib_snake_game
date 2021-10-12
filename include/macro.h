@@ -13,6 +13,9 @@ enum class POINT_TYPE {
   SNAKE_HEAD,
   SNAKE_BODY,
   SNAKE_TAIL,
+  SNAKE_HEAD_PC,
+  SNAKE_TAIL_PC,
+  SNAKE_BODY_PC,
   PATH_VISITED,
   PATH_FOUND_PATH,
   PATH_ADJACENT,
@@ -60,6 +63,23 @@ enum class BOUNDARY_STATUS {
   RIGHT
 };
 
+enum class SNAKE_TYPE {
+  USER,
+  PC
+};
+
+static std::unordered_map<SNAKE_TYPE, POINT_TYPE> const G_SNAKE_HEAD_TYPE{
+  { SNAKE_TYPE::USER, POINT_TYPE::SNAKE_HEAD },
+  { SNAKE_TYPE::PC, POINT_TYPE::SNAKE_HEAD_PC }
+};
+static std::unordered_map<SNAKE_TYPE, POINT_TYPE> const G_SNAKE_BODY_TYPE{
+  { SNAKE_TYPE::USER, POINT_TYPE::SNAKE_BODY },
+  { SNAKE_TYPE::PC, POINT_TYPE::SNAKE_BODY_PC }
+};
+static std::unordered_map<SNAKE_TYPE, POINT_TYPE> const G_SNAKE_TAIL_TYPE{
+  { SNAKE_TYPE::USER, POINT_TYPE::SNAKE_TAIL },
+  { SNAKE_TYPE::PC, POINT_TYPE::SNAKE_TAIL_PC }
+};
 
 static std::unordered_map<POINT_TYPE, std::string> const G_TYPE_NAME {
   { POINT_TYPE::UNDEFINED  , "Undefined"  },
@@ -90,8 +110,11 @@ static std::unordered_map<POINT_TYPE, Color> G_TYPE_COLOR{
   { POINT_TYPE::WALL           , RED       },
   { POINT_TYPE::OBSTACLE       , DARKBROWN },
   { POINT_TYPE::SNAKE_HEAD     , DARKBLUE  },
+  { POINT_TYPE::SNAKE_HEAD_PC  , DARKGREEN },
   { POINT_TYPE::SNAKE_BODY     , BLUE      },
+  { POINT_TYPE::SNAKE_BODY_PC  , GREEN      },
   { POINT_TYPE::SNAKE_TAIL     , SKYBLUE   },
+  { POINT_TYPE::SNAKE_TAIL_PC  , GREEN   },
   { POINT_TYPE::PATH_ADJACENT  , VIOLET    },
   { POINT_TYPE::PATH_FOUND_PATH, PURPLE    },
   { POINT_TYPE::PATH_VISITED   , BLACK     },

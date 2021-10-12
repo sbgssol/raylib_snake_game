@@ -34,9 +34,12 @@ bool CPoint::is_reachable() const {
 }
 
 bool CPoint::is_modifiable_type() const {
-  return !(type_ == POINT_TYPE::SNAKE_TAIL ||
-           type_ == POINT_TYPE::SNAKE_HEAD ||
-           type_ == POINT_TYPE::SNAKE_BODY ||
+  return !(type_ == POINT_TYPE::SNAKE_TAIL    ||
+           type_ == POINT_TYPE::SNAKE_HEAD    ||
+           type_ == POINT_TYPE::SNAKE_BODY    ||
+           type_ == POINT_TYPE::SNAKE_TAIL_PC ||
+           type_ == POINT_TYPE::SNAKE_HEAD_PC ||
+           type_ == POINT_TYPE::SNAKE_BODY_PC ||
            type_ == POINT_TYPE::FOOD);
 }
 
@@ -58,13 +61,13 @@ void CPoint::draw() const {
   DrawRectangle(r.x, r.y, r.width, r.height, G_TYPE_COLOR.at(this->type_));
 
   // for checking heuristic value; require draw full
-  if (type() != POINT_TYPE::SPACE) 	{
-    UI32 pos_x = x_ * CPoint::size_;
-    UI32 pos_y = y_ * CPoint::size_;
-    std::stringstream ss;
-    ss << heuristic_value_;
-    DrawText(ss.str().c_str(), pos_x, pos_y, 5, RED);
-  }
+  //if (type() != POINT_TYPE::SPACE) 	{
+  //  UI32 pos_x = x_ * CPoint::size_;
+  //  UI32 pos_y = y_ * CPoint::size_;
+  //  std::stringstream ss;
+  //  ss << heuristic_value_;
+  //  DrawText(ss.str().c_str(), pos_x, pos_y, 5, RED);
+  //}
 
   //ss.str("");
   //ss << (x_ * 600/30 + y_);

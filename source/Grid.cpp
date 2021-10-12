@@ -5,7 +5,7 @@
 //CPoint& CGrid::random_point() {
 //  return grid_.at(rnd_.random());
 //}
-
+POINT_TYPE CGrid::initial_type_{ POINT_TYPE::UNDEFINED };
 CGrid::CGrid(UI32 const t_width, UI32 const t_height, UI32 const t_grid_size)
   : width_(t_width / t_grid_size),
   height_(t_height / t_grid_size),
@@ -125,7 +125,7 @@ void CGrid::init_grid() {
     for (UI32 y = 0; y < this->height(); ++y) {
       UI32 id = x * this->height() + y;
       //std::cout << __FUNCTION__ << " - (" << x << ", " << y << "): " << id << '\n';
-      grid_.insert(std::make_pair(id, CPoint{ x, y, POINT_TYPE::UNDEFINED }));
+      grid_.insert(std::make_pair(id, CPoint{ x, y, initial_type_ }));
     }
   }
 }

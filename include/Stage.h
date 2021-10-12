@@ -25,7 +25,7 @@ public:
   void dump() const;
 protected:
   void    spawn_food();
-  CSnake* init_snake();
+  CSnake* init_snake(SNAKE_TYPE t_snake_type = SNAKE_TYPE::USER);
   CFood*  init_food();
   void    init_rest_points();
   CPoint* random_point() const;
@@ -62,4 +62,5 @@ private:
   CBackground* background_;
   CFood*       food_;
   CSnake*      snake_;
+  CSnake* pc_snake_;
 };

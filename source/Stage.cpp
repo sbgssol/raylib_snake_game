@@ -4,9 +4,11 @@
 #include "ratio_random.h"
 
 CStage::CStage(SScreenInfo t_screen_info, LEVEL t_level) {
+  CGrid::initial_type_ = POINT_TYPE::UNDEFINED;
   grid_ = new CGrid{ t_screen_info.width_, t_screen_info.height_, t_screen_info.grid_size_ };
   background_ = new CBackground{ grid_, t_level };
   snake_ = init_snake();
+  pc_snake_ = init_snake(SNAKE_TYPE::PC);
   food_ = init_food();
   init_rest_points();
   init_graph();
@@ -55,32 +57,35 @@ void CStage::spawn_food() {
 
 void CStage::init_rest_points() {
   for(UI32 id = 0; id <= grid_->maximum_point_id(); ++id) {
-    if(grid_->at(id)->type() == POINT_TYPE::UNDEFINED) {
+    if(grid_->at(id)->type() == CGrid::initial_type_) {
       grid_->at(id)->set_type(POINT_TYPE::SPACE);
     }
   }
 }
 
 void CStage::draw() const {
-  grid_->draw_full();
-  //draw_grid();
-  //draw_food();
-  //draw_snake();
-  //draw_path();
-  //draw_obstacles();
+  //grid_->draw_full();
+  draw_grid();
+  draw_food();
+  draw_snake();
+  draw_path();
+  draw_obstacles();
 }
 
 void CStage::dump() const {
   grid_->dump();
 }
 
-CSnake* CStage::init_snake() {
+CSnake* CStage::init_snake(SNAKE_TYPE t_snake_type) {
   // random head;
   auto far_from_wall = [&](UI32 d) -> bool {
     return ((d > static_cast<UI32>(DEFAULT::SNAKE_LENGTH)) && 
             (d < grid_->width() - 1 - static_cast<UI32>(DEFAULT::SNAKE_LENGTH) && (d < grid_->height() - 1 - static_cast<UI32>(DEFAULT::SNAKE_LENGTH))));
   };
   CPoint* head = this->random_point(far_from_wall, far_from_wall);
+  while (head->type() != CGrid::initial_type_) {
+    head = this->random_point(far_from_wall, far_from_wall);
+  };
   CPoint* tail = nullptr;
   std::vector<CPoint*> body;
 
@@ -117,13 +122,13 @@ CSnake* CStage::init_snake() {
       body.emplace_back(grid_->at(head_id - grid_->height() * i));
     }
   }
-
+    
   for(auto & p : body) {
-    p->set_type(POINT_TYPE::SNAKE_BODY);
+    p->set_type(G_SNAKE_BODY_TYPE.at(t_snake_type));
   }
-
-  head->set_type(POINT_TYPE::SNAKE_HEAD);
-  tail->set_type(POINT_TYPE::SNAKE_TAIL);
+  head->set_type(G_SNAKE_HEAD_TYPE.at(t_snake_type));
+  tail->set_type(G_SNAKE_TAIL_TYPE.at(t_snake_type));
+  
   CSnake* snake = new CSnake{grid_, head, tail, body, static_cast<UI32>(DEFAULT::SNAKE_LENGTH), direction };
   initialized_direction_ = direction;
   return snake;
@@ -135,7 +140,7 @@ CFood* CStage::init_food() {
     return ((d != 0) && (d != grid_->width() - 1) && (d != grid_->height() - 1));
   };
   CPoint* point = this->random_point(is_boundary, is_boundary);
-  while(point->type() != POINT_TYPE::UNDEFINED) {
+  while(point->type() != CGrid::initial_type_) {
     point = this->random_point(is_boundary, is_boundary);
   }
 
@@ -420,6 +425,7 @@ void CStage::draw_food() const {
 
 void CStage::draw_snake() const {
   snake_->draw();
+  pc_snake_->draw();
 }
 
 void CStage::draw_path() const {

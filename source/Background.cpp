@@ -40,7 +40,7 @@ void CBackground::init_obstacle() {
     case LEVEL::_0: {
       for(UI32 i = 0; i < (UI32)OBSTACLE_NUM::LEVEL_0; ++i) {
         CPoint* p = grid_->at(RRND::Basic::random(0U, maximum_point_id));
-        while (p->type() != POINT_TYPE::UNDEFINED) {
+        while (p->type() != CGrid::initial_type_) {
           p = grid_->at(RRND::Basic::random(0U, maximum_point_id));
         }
         p->set_type(POINT_TYPE::OBSTACLE);

@@ -21,10 +21,10 @@ public:
   CPoint const& at(UI32 t_id) const;
   std::unordered_set<BOUNDARY_STATUS> get_boundary_status(UI32 t_id) const;
   UI32 get_point_id(CPoint* const& t_point) const;
-
   void draw() const;
   void draw_full() const;
   void dump() const;
+  static POINT_TYPE initial_type_;
 protected:
   void init_grid();
   void use_manhattan_distance(CPoint* t_food_position);
