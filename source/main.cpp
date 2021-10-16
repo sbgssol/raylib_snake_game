@@ -73,7 +73,7 @@ int main(void) {
   //RRND::Basic::set_seed(0x63f37b69);
   screenHeight = 600;
   screenWidth = 900;
-  GRID_SIZE = 40;
+  GRID_SIZE = 20;
 
   //std::cout << "random seed: " << std::hex << RRND::Basic::get_seed() << '\n';
   InitWindow(screenWidth, screenHeight, "classic game: snake");
@@ -152,9 +152,10 @@ void UpdateGame(void) {
         stage->expand_frontier();
       }
       // Snake movement
-      if ((framesCounter % 500) == 0 && key_pressed) {
+      if ((framesCounter % 600) == 0 && key_pressed) {
+        framesCounter = 0;
         // TODO: Control speed by framesCounter and modulo
-        //stage->move_snake(d);
+        stage->move_snake(d);
 
       }
       

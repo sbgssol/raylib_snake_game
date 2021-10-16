@@ -56,7 +56,7 @@ protected:
   bool                food_found_{ false };
 
   DIRECTION    initialized_direction_{ DIRECTION::UP };
-  bool         just_eat_food_ {false};
+  bool         just_eat_food_ {false}; // to increase snake head while moving
 private:
   CGrid*       grid_;
   CBackground* background_;

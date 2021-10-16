@@ -41,6 +41,17 @@ bool CStage::is_food_collided() const {
 void CStage::handle_food_collision() {
   spawn_food();
   just_eat_food_ = true;
+
+  // handle path finding initialization
+  frontier_initialized_ = false;
+  for(auto p : shortest_path_) {
+    if(p->is_modifiable_type()) {
+      p->set_type(POINT_TYPE::SPACE);
+    }
+  }
+  shortest_path_.clear();
+  astar_visited_.clear();
+  astar_frontier_.clear();
 }
 
 void CStage::spawn_food() {
@@ -350,7 +361,6 @@ void CStage::use_dfs() {
 
 void CStage::use_a_star() {
   if (frontier_initialized_ && astar_frontier_.empty()) {
-    //shortest_path_.clear();
     return;
   }
   if (astar_frontier_.empty()) {
@@ -367,11 +377,13 @@ void CStage::use_a_star() {
   astar_frontier_.sort([](CPoint* p1, CPoint* p2) {
     return (p1->cost_so_far_ + p1->heuristic_value_) < (p2->cost_so_far_ + p2->heuristic_value_);
   });
-  //watch(astar_frontier_.size());
 
   CPoint* p = astar_frontier_.front();
-  //p->dump();
-  astar_frontier_.erase(astar_frontier_.begin());
+  astar_frontier_.pop_front();
+
+  std::sort(p->adjacent_.begin(), p->adjacent_.end(), [](CPoint* p1, CPoint* p2) {
+    return (p1->cost_so_far_ + p1->heuristic_value_) < (p2->cost_so_far_ + p2->heuristic_value_);
+  }); // to select the lowest cost adjacent
 
   if (astar_visited_.find(p) == astar_visited_.end()) {
     float new_cost = 0;
@@ -390,13 +402,12 @@ void CStage::use_a_star() {
           adj->set_type(POINT_TYPE::PATH_ADJACENT);
         }
         astar_frontier_.push_back(adj);
+        break; // just collect the lowest cost one
       }
     }
   }
 
   astar_visited_.insert(p);
-  //watch(astar_frontier_.size());
-  //watch(astar_visited_.size());
 
   if (p->is_modifiable_type()) {
     p->set_type(POINT_TYPE::PATH_VISITED);
