@@ -50,8 +50,8 @@ void CGrid::draw() const {
 }
 
 void CGrid::draw_full() const {
-  for(auto p : grid_) {
-    p.second.draw();
+  for (UI32 i = 0; i < linear_grid_.size(); ++i) {
+    linear_grid_[i]->draw();
   }
 }
 
@@ -126,6 +126,7 @@ void CGrid::init_grid() {
       UI32 id = x * this->height() + y;
       //std::cout << __FUNCTION__ << " - (" << x << ", " << y << "): " << id << '\n';
       grid_.insert(std::make_pair(id, CPoint{ x, y, initial_type_ }));
+      ; linear_grid_.push_back(&grid_.at(id));
     }
   }
 }

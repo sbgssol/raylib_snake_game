@@ -31,6 +31,7 @@ protected:
   void use_euclidean_distance(CPoint* t_food_position);
 private:
   std::unordered_map<UI32, CPoint> grid_;
+  std::vector<CPoint*> linear_grid_;
   UI32 width_;
   UI32 height_;
   UI32 grid_size_;

@@ -80,7 +80,7 @@ int main(void) {
 
   InitGame();
 
-  //SetTargetFPS(FPS);
+  //SetTargetFPS(500);
 
 
   // Main game loop

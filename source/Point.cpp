@@ -6,6 +6,7 @@
 #include "ratio_random.h"
 
 UI32 CPoint::size_ = (UI32)DEFAULT::POINT_SIZE;
+std::unordered_map<POINT_TYPE, Texture2D> CPoint::point_image_{};
 
 CPoint::CPoint(UI32 const t_x, UI32 const t_y, POINT_TYPE const t_type)
   : x_(t_x),
@@ -50,6 +51,24 @@ void CPoint::set_size(UI32 t_size) {
 UI32 CPoint::get_size() {
   return size_;
 }
+// TODO: adjust texture with point size
+void CPoint::initialize_point_image() {
+  std::unordered_map<POINT_TYPE, char const *> image_name{
+    { POINT_TYPE::SPACE           , "resources/steel.png"       },
+    { POINT_TYPE::OBSTACLE        , "resources/brick.png"       },
+    { POINT_TYPE::PATH_FOUND_PATH , "resources/pink_tile.png"   },
+    { POINT_TYPE::FOOD            , "resources/watermellon.png" },
+    { POINT_TYPE::SNAKE_BODY      , "resources/snake_skin.png"  },
+    { POINT_TYPE::SNAKE_TAIL      , "resources/snake_skin.png"  }
+  };
+  
+  for(auto& p : image_name) {
+    Texture2D texture = LoadTexture(p.second);
+    texture.height = CPoint::size_;
+    texture.width = CPoint::size_;
+    point_image_.insert(std::make_pair(p.first, texture));
+  }
+}
 
 void CPoint::set_type(POINT_TYPE t_type) {
   this->type_ = t_type;
@@ -58,7 +77,12 @@ void CPoint::set_type(POINT_TYPE t_type) {
 void CPoint::draw() const {
   float const GAP_SIZE = 0.2f;
   Rectangle r{ this->x_ * CPoint::size_, this->y_ * CPoint::size_, CPoint::size_ - GAP_SIZE, CPoint::size_ - GAP_SIZE };
-  DrawRectangle(r.x, r.y, r.width, r.height, G_TYPE_COLOR.at(this->type_));
+
+  if (point_image_.find(type()) == point_image_.end()) 	{
+    DrawRectangle(r.x, r.y, r.width, r.height, G_TYPE_COLOR.at(this->type_));
+  } else {
+    DrawTexture(point_image_.at(type()), r.x, r.y, WHITE);
+  }
 
   // for checking heuristic value; require draw full
   //if (type() != POINT_TYPE::SPACE) 	{

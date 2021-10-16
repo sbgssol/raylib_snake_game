@@ -5,6 +5,8 @@
 
 CStage::CStage(SScreenInfo t_screen_info, LEVEL t_level) {
   CGrid::initial_type_ = POINT_TYPE::UNDEFINED;
+  CPoint::initialize_point_image();
+
   grid_ = new CGrid{ t_screen_info.width_, t_screen_info.height_, t_screen_info.grid_size_ };
   background_ = new CBackground{ grid_, t_level };
   snake_ = init_snake();

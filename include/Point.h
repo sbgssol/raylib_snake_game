@@ -7,6 +7,7 @@ public:
   // static method
   static void set_size(UI32 t_size);
   static UI32 get_size();
+  static void initialize_point_image();
 
   // constructors
   CPoint(UI32 const t_x, UI32 const t_y, POINT_TYPE const t_type);
@@ -26,6 +27,7 @@ public:
   void dump() const;
   std::string to_string() const;
 public:
+  static std::unordered_map<POINT_TYPE, Texture2D> point_image_;
   std::vector<CPoint*>    adjacent_;
   CPoint*                 parents_{ nullptr };
   float                   cost_so_far_{ 9999 };
