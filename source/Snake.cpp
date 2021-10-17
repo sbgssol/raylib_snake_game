@@ -4,7 +4,7 @@
 
 
 void CSnake::move(DIRECTION t_direction, bool t_just_eat_food) {
-  // TODO: Boundary checking => DONE
+  // TODO [DONE]: Boundary checking
   // BUG: Boundary BOTTOM/RIGHT, direction=RIGHT => DONE
   std::unordered_map<DIRECTION, DIRECTION> direction_checker {
     { DIRECTION::UP    , DIRECTION::DOWN},

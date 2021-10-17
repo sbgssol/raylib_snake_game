@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <thread>
 
 #include "Stage.h"
 #include "ratio_random.h"
@@ -364,7 +365,7 @@ void CStage::use_dfs() {
   }
 }
 
-// TODO improve a*
+// TODO [DONE: now search towards fruit, but still large] improve a*
 void CStage::use_a_star(std::ostream& os) {
   if (frontier_initialized_ && astar_frontier_.empty()) {
     return;
@@ -436,7 +437,9 @@ void CStage::trace_path() {
   if (food_found_) {
     CPoint* current = food_->position()->parents_;
     while (current) {
-      current->set_type(POINT_TYPE::PATH_FOUND_PATH);
+      if (current->is_modifiable_type()) 	{
+        current->set_type(POINT_TYPE::PATH_FOUND_PATH);
+      }
       shortest_path_.push_back(current);
       current = current->parents_;
     }
@@ -474,5 +477,8 @@ void CStage::expand_frontier(std::ostream& os) {
   //use_dfs();
   //use_dijkstra();
   use_a_star(os);
+  //std::thread fiding_thread;
+  //fiding_thread = std::thread{ &CStage::use_a_star, this, std::ref(os) };  
+  //fiding_thread.detach();
   trace_path();
 }

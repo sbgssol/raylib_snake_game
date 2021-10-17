@@ -68,11 +68,14 @@ bool key_pressed = false;
 CStage* stage;
 
 std::fstream log_file;
+
+
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
 int main(void) {
   RRND::Basic::set_seed(0xbdd0343d);
+  //RRND::Basic::set_seed(std::random_device{}());
   //RRND::Basic::set_seed(0x63f37b69);
   screenHeight = 600;
   screenWidth = 900;

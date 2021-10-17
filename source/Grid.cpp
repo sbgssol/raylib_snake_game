@@ -34,15 +34,16 @@ void CGrid::calculate_heuristic_value(CPoint* t_food_position) {
   //use_manhattan_distance(t_food_position);
 }
 
-//TODO Improve this function to increase FPS: background::draw = draw line only
+//TODO [DONE] Improve this function to increase FPS: background::draw = draw line only
 void CGrid::draw() const {
-  
+  // horizontal lines
   for(UI32 x = 1; x < width(); ++x) {
     auto start_pos = Vector2{ static_cast<float>(0), static_cast<float>(x * grid_size()) };
     auto end_pos   = Vector2{ static_cast<float>(height()) * grid_size(),static_cast<float>(x * grid_size()) };
     DrawLineV(start_pos, end_pos, DARKGRAY);
   }
 
+  // vertical lines
   for (UI32 y = 1; y <= height(); ++y) {
     auto start_pos = Vector2{ static_cast<float>(y * grid_size()), 0 };
     auto end_pos = Vector2{ static_cast<float>(y) * grid_size(),static_cast<float>(width() * grid_size()) };
