@@ -19,10 +19,11 @@ public:
   DIRECTION get_initialized_snake_direction() const;
   bool      is_food_collided() const;
   void      handle_food_collision();
-  void      expand_frontier();
+  void      expand_frontier(std::ostream& = std::cout);
 
   void draw() const;
   void dump() const;
+  static UI32 stage_count;
 protected:
   void    spawn_food();
   CSnake* init_snake(SNAKE_TYPE t_snake_type = SNAKE_TYPE::USER);
@@ -35,7 +36,7 @@ protected:
   void    use_bfs();
   void    use_dijkstra();
   void    use_dfs();
-  void    use_a_star();
+  void    use_a_star(std::ostream& = std::cout);
   void    trace_path();
 
   void    draw_grid() const;
@@ -57,6 +58,8 @@ protected:
 
   DIRECTION    initialized_direction_{ DIRECTION::UP };
   bool         just_eat_food_ {false}; // to increase snake head while moving
+
+  
 private:
   CGrid*       grid_;
   CBackground* background_;

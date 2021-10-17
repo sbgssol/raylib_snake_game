@@ -31,6 +31,7 @@ UI32 CGrid::maximum_point_id() const {
 
 void CGrid::calculate_heuristic_value(CPoint* t_food_position) {
   use_euclidean_distance(t_food_position);
+  //use_manhattan_distance(t_food_position);
 }
 
 //TODO Improve this function to increase FPS: background::draw = draw line only
@@ -132,6 +133,13 @@ void CGrid::init_grid() {
 }
 
 void CGrid::use_manhattan_distance(CPoint* t_food_position) {
+  for (auto& p : grid_) {
+    if (p.second.is_reachable()) {
+      float x_dis = std::abs(static_cast<SI32>(p.second.x()) - static_cast<SI32>(t_food_position->x()));
+      float y_dis = std::abs(static_cast<SI32>(p.second.y()) - static_cast<SI32>(t_food_position->y()));
+      p.second.heuristic_value_ = (x_dis + y_dis);
+    }
+  }
 }
 
 void CGrid::use_euclidean_distance(CPoint* t_food_position) {

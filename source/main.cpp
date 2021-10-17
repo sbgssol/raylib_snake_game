@@ -1,5 +1,7 @@
+#include <fstream>
 #include <iostream>
 #include <random>
+#include <sstream>
 
 #include "raylib.h"
 #include "ratio_random.h"
@@ -65,20 +67,25 @@ bool key_pressed = false;
 
 CStage* stage;
 
+std::fstream log_file;
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
 int main(void) {
-  RRND::Basic::set_seed(std::random_device{}());
+  RRND::Basic::set_seed(0xbdd0343d);
   //RRND::Basic::set_seed(0x63f37b69);
   screenHeight = 600;
   screenWidth = 900;
   GRID_SIZE = 20;
 
+  log_file.open("./bug_record/log.log", std::ios::out);
   //std::cout << "random seed: " << std::hex << RRND::Basic::get_seed() << '\n';
-  InitWindow(screenWidth, screenHeight, "classic game: snake");
-
+  std::stringstream ss;
+  ss << "snake game: 0x" << std::hex << RRND::Basic::get_seed() << ", stage count: " << CStage::stage_count;
+  InitWindow(screenWidth, screenHeight, ss.str().c_str());
   InitGame();
+
+  
 
   //SetTargetFPS(500);
 
@@ -107,6 +114,9 @@ void InitGame(void) {
   stage = new CStage{
   {static_cast<UI32>(screenHeight), static_cast<UI32>(screenHeight), static_cast<UI32>(GRID_SIZE)}, LEVEL::_0
   };
+  std::stringstream ss;
+  ss << "snake game: 0x" << std::hex << RRND::Basic::get_seed() << ", stage count: " << CStage::stage_count;
+  SetWindowTitle(ss.str().c_str());
   //stage->dump();
   framesCounter = 0;
   gameOver = false;
@@ -149,7 +159,7 @@ void UpdateGame(void) {
       }
 
       if (true) {
-        stage->expand_frontier();
+        stage->expand_frontier(log_file);
       }
       // Snake movement
       if ((framesCounter % 600) == 0 && key_pressed) {

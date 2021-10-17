@@ -82,14 +82,21 @@ static std::unordered_map<SNAKE_TYPE, POINT_TYPE> const G_SNAKE_TAIL_TYPE{
 };
 
 static std::unordered_map<POINT_TYPE, std::string> const G_TYPE_NAME {
-  { POINT_TYPE::UNDEFINED  , "Undefined"  },
-  { POINT_TYPE::SPACE      , "Space"      },
-  { POINT_TYPE::FOOD       , "Food"       },
-  { POINT_TYPE::WALL       , "Wall"       },
-  { POINT_TYPE::OBSTACLE   , "Obstacle"   },
-  { POINT_TYPE::SNAKE_HEAD , "Snake_head" },
-  { POINT_TYPE::SNAKE_BODY , "Snake_body" },
-  { POINT_TYPE::SNAKE_TAIL , "Snake_tail" }
+  { POINT_TYPE::UNDEFINED       , "Undefined"       },
+  { POINT_TYPE::SPACE           , "Space"           },
+  { POINT_TYPE::FOOD            , "Food"            },
+  { POINT_TYPE::WALL            , "Wall"            },
+  { POINT_TYPE::OBSTACLE        , "Obstacle"        },
+  { POINT_TYPE::SNAKE_HEAD      , "Snake_head"      },
+  { POINT_TYPE::SNAKE_BODY      , "Snake_body"      },
+  { POINT_TYPE::SNAKE_TAIL      , "Snake_tail"      },
+  { POINT_TYPE::SNAKE_HEAD_PC   , "snake_head_pc"   },
+  { POINT_TYPE::SNAKE_TAIL_PC   , "snake_tail_pc"   },
+  { POINT_TYPE::SNAKE_BODY_PC   , "snake_body_pc"   },
+  { POINT_TYPE::PATH_VISITED    , "path_visited"    },
+  { POINT_TYPE::PATH_FOUND_PATH , "path_found_path" },
+  { POINT_TYPE::PATH_ADJACENT   , "path_adjacent"   },
+  { POINT_TYPE::PATH_CURRENT    , "path_current"    }  
 };
 
 static std::unordered_map<POINT_TYPE, char> const G_TYPE_CHAR {

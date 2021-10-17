@@ -1,12 +1,15 @@
 #include <iostream>
+#include <fstream>
 
 #include "Stage.h"
 #include "ratio_random.h"
 
+UI32 CStage::stage_count{ 0 };
+
 CStage::CStage(SScreenInfo t_screen_info, LEVEL t_level) {
   CGrid::initial_type_ = POINT_TYPE::UNDEFINED;
   CPoint::initialize_point_image();
-
+  ++stage_count;
   grid_ = new CGrid{ t_screen_info.width_, t_screen_info.height_, t_screen_info.grid_size_ };
   background_ = new CBackground{ grid_, t_level };
   snake_ = init_snake();
@@ -46,8 +49,8 @@ void CStage::handle_food_collision() {
 
   // handle path finding initialization
   frontier_initialized_ = false;
-  for(auto p : shortest_path_) {
-    if(p->is_modifiable_type()) {
+  for (auto p : shortest_path_) {
+    if (p->is_modifiable_type()) {
       p->set_type(POINT_TYPE::SPACE);
     }
   }
@@ -62,15 +65,15 @@ void CStage::spawn_food() {
     return ((d != 0) && (d != grid_->width() - 1) && (d != grid_->height() - 1));
   };
   CPoint* point = this->random_point(is_boundary, is_boundary);
-  while(point->type() != POINT_TYPE::SPACE) {
+  while (point->type() != POINT_TYPE::SPACE) {
     point = this->random_point(is_boundary, is_boundary);
   }
   food_ = new CFood{ point };
 }
 
 void CStage::init_rest_points() {
-  for(UI32 id = 0; id <= grid_->maximum_point_id(); ++id) {
-    if(grid_->at(id)->type() == CGrid::initial_type_) {
+  for (UI32 id = 0; id <= grid_->maximum_point_id(); ++id) {
+    if (grid_->at(id)->type() == CGrid::initial_type_) {
       grid_->at(id)->set_type(POINT_TYPE::SPACE);
     }
   }
@@ -92,7 +95,7 @@ void CStage::dump() const {
 CSnake* CStage::init_snake(SNAKE_TYPE t_snake_type) {
   // random head;
   auto far_from_wall = [&](UI32 d) -> bool {
-    return ((d > static_cast<UI32>(DEFAULT::SNAKE_LENGTH)) && 
+    return ((d > static_cast<UI32>(DEFAULT::SNAKE_LENGTH)) &&
             (d < grid_->width() - 1 - static_cast<UI32>(DEFAULT::SNAKE_LENGTH) && (d < grid_->height() - 1 - static_cast<UI32>(DEFAULT::SNAKE_LENGTH))));
   };
   CPoint* head = this->random_point(far_from_wall, far_from_wall);
@@ -102,19 +105,19 @@ CSnake* CStage::init_snake(SNAKE_TYPE t_snake_type) {
   CPoint* tail = nullptr;
   std::vector<CPoint*> body;
 
-  DIRECTION const direction = RRND::Core<DIRECTION>::random({ DIRECTION::DOWN, DIRECTION::UP, DIRECTION::LEFT, DIRECTION::RIGHT }); 
-  if(direction == DIRECTION::DOWN) {
+  DIRECTION const direction = RRND::Core<DIRECTION>::random({ DIRECTION::DOWN, DIRECTION::UP, DIRECTION::LEFT, DIRECTION::RIGHT });
+  if (direction == DIRECTION::DOWN) {
     UI32 head_id = head->x() * grid_->height() + head->y();
     tail = grid_->at(head_id - static_cast<UI32>(DEFAULT::SNAKE_LENGTH));
-    for(UI32 i = 0; i < static_cast<UI32>(DEFAULT::SNAKE_LENGTH); ++i) {
+    for (UI32 i = 0; i < static_cast<UI32>(DEFAULT::SNAKE_LENGTH); ++i) {
       body.emplace_back(grid_->at(head_id - i));
-    }    
+    }
   }
 
   if (direction == DIRECTION::UP) {
     UI32 head_id = head->x() * grid_->height() + head->y();
     tail = grid_->at(head_id + static_cast<UI32>(DEFAULT::SNAKE_LENGTH));
-    for (UI32  i = 0; i < static_cast<UI32>(DEFAULT::SNAKE_LENGTH); i++) 		{
+    for (UI32 i = 0; i < static_cast<UI32>(DEFAULT::SNAKE_LENGTH); i++) {
       body.emplace_back(grid_->at(head_id + i));
     }
   }
@@ -122,7 +125,7 @@ CSnake* CStage::init_snake(SNAKE_TYPE t_snake_type) {
   if (direction == DIRECTION::LEFT) {
     UI32 head_id = head->x() * grid_->height() + head->y();
     tail = grid_->at(head_id + static_cast<UI32>(DEFAULT::SNAKE_LENGTH) * grid_->height());
-    for (UI32 i = 0; i < static_cast<UI32>(DEFAULT::SNAKE_LENGTH); i++) 		{
+    for (UI32 i = 0; i < static_cast<UI32>(DEFAULT::SNAKE_LENGTH); i++) {
       body.emplace_back(grid_->at(head_id + grid_->height() * i));
     }
   }
@@ -130,19 +133,19 @@ CSnake* CStage::init_snake(SNAKE_TYPE t_snake_type) {
   if (direction == DIRECTION::RIGHT) {
     UI32 head_id = head->x() * grid_->height() + head->y();
     tail = grid_->at(head_id - grid_->height() * static_cast<UI32>(DEFAULT::SNAKE_LENGTH));
-    
-    for (UI32 i = 0; i < static_cast<UI32>(DEFAULT::SNAKE_LENGTH); i++) 		{
+
+    for (UI32 i = 0; i < static_cast<UI32>(DEFAULT::SNAKE_LENGTH); i++) {
       body.emplace_back(grid_->at(head_id - grid_->height() * i));
     }
   }
-    
-  for(auto & p : body) {
+
+  for (auto& p : body) {
     p->set_type(G_SNAKE_BODY_TYPE.at(t_snake_type));
   }
   head->set_type(G_SNAKE_HEAD_TYPE.at(t_snake_type));
   tail->set_type(G_SNAKE_TAIL_TYPE.at(t_snake_type));
-  
-  CSnake* snake = new CSnake{grid_, head, tail, body, static_cast<UI32>(DEFAULT::SNAKE_LENGTH), direction };
+
+  CSnake* snake = new CSnake{ grid_, head, tail, body, static_cast<UI32>(DEFAULT::SNAKE_LENGTH), direction };
   initialized_direction_ = direction;
   return snake;
 }
@@ -153,7 +156,7 @@ CFood* CStage::init_food() {
     return ((d != 0) && (d != grid_->width() - 1) && (d != grid_->height() - 1));
   };
   CPoint* point = this->random_point(is_boundary, is_boundary);
-  while(point->type() != CGrid::initial_type_) {
+  while (point->type() != CGrid::initial_type_) {
     point = this->random_point(is_boundary, is_boundary);
   }
 
@@ -168,8 +171,8 @@ CPoint* CStage::random_point() const {
 
 CPoint* CStage::random_point(std::function<bool(UI32)> t_x_constraint, std::function<bool(UI32)> t_y_constraint) const {
   CPoint* p = this->random_point();
-  while(t_x_constraint(p->x()) == false || 
-        t_y_constraint(p->y()) == false) {
+  while (t_x_constraint(p->x()) == false ||
+         t_y_constraint(p->y()) == false) {
     p = this->random_point();
   }
   return p;
@@ -177,12 +180,12 @@ CPoint* CStage::random_point(std::function<bool(UI32)> t_x_constraint, std::func
 
 void CStage::init_graph() {
   auto insert_adj = [=](CPoint* source, CPoint* adj) -> void {
-    if (adj->is_reachable()) 	{
+    if (adj->is_reachable()) {
       source->adjacent_.push_back(adj);
     }
   };
-  for(UI32 id = 0; id <= grid_->maximum_point_id(); ++id) {
-    CPoint* p = grid_->at(id);    
+  for (UI32 id = 0; id <= grid_->maximum_point_id(); ++id) {
+    CPoint* p = grid_->at(id);
     auto boundary_status = grid_->get_boundary_status(id);
     // handle normal cases
     if (boundary_status.empty()) {
@@ -221,9 +224,9 @@ void CStage::init_graph() {
         }
       }
       // handle for edges
-      if(boundary_status.size() == 1) {
+      if (boundary_status.size() == 1) {
         // top
-        if(boundary_status.find(BOUNDARY_STATUS::TOP) != boundary_status.end()) {
+        if (boundary_status.find(BOUNDARY_STATUS::TOP) != boundary_status.end()) {
           insert_adj(p, grid_->at(id - grid_->height()));
           insert_adj(p, grid_->at(id + 1));
           insert_adj(p, grid_->at(id + grid_->height()));
@@ -290,7 +293,7 @@ void CStage::use_dijkstra() {
   if (dijsktra_frontier_.empty()) {
     for (auto adj : snake_->head()->adjacent_) {
       adj->cost_so_far_ = 1;
-      dijsktra_frontier_.push_back(adj);      
+      dijsktra_frontier_.push_back(adj);
     }
     frontier_initialized_ = true;
   }
@@ -301,7 +304,7 @@ void CStage::use_dijkstra() {
 
   CPoint* p = dijsktra_frontier_.front();
   dijsktra_frontier_.erase(dijsktra_frontier_.begin());
-  
+
   if (dijkstra_visited.find(p) == dijkstra_visited.end()) {
     UI32 new_cost = 0;
     for (auto adj : p->adjacent_) {
@@ -341,7 +344,7 @@ void CStage::use_dfs() {
     }
     frontier_initialized_ = true;
   }
-  
+
   dfs_frontier_.top()->set_type(POINT_TYPE::PATH_VISITED);
   CPoint* p = dfs_frontier_.top();
   dfs_frontier_.pop();
@@ -361,14 +364,13 @@ void CStage::use_dfs() {
   }
 }
 
-void CStage::use_a_star() {
+// TODO improve a*
+void CStage::use_a_star(std::ostream& os) {
   if (frontier_initialized_ && astar_frontier_.empty()) {
     return;
   }
   if (astar_frontier_.empty()) {
-    // initialize heuristic value
     grid_->calculate_heuristic_value(food_->position());
-
     for (auto adj : snake_->head()->adjacent_) {
       adj->cost_so_far_ = 1;
       astar_frontier_.push_back(adj);
@@ -376,40 +378,54 @@ void CStage::use_a_star() {
     frontier_initialized_ = true;
   }
 
-  astar_frontier_.sort([](CPoint* p1, CPoint* p2) {
-    return (p1->cost_so_far_ + p1->heuristic_value_) < (p2->cost_so_far_ + p2->heuristic_value_);
-  });
 
+  astar_frontier_.sort([](CPoint* p1, CPoint* p2) {
+    //return (p1->heuristic_value_) < (p2->heuristic_value_);
+    //return (p1->cost_so_far_) < (p2->cost_so_far_);
+    return (p1->cost_so_far_ + p1->heuristic_value_) < (p2->cost_so_far_ + p2->heuristic_value_);
+    //return (p1->cost_so_far_ > p2->cost_so_far_) && (p1->heuristic_value_ < p2->heuristic_value_);
+  });
+  // for debugging
+  //os << "start\n";
+  //os << food_->position()->to_string() << '\n';
+  //for (auto p : astar_frontier_) {
+  //  p->dump(os);
+  //}
+  //os << "end\n";
+  ///////////////////
   CPoint* p = astar_frontier_.front();
   astar_frontier_.pop_front();
-
-  std::sort(p->adjacent_.begin(), p->adjacent_.end(), [](CPoint* p1, CPoint* p2) {
-    return (p1->cost_so_far_ + p1->heuristic_value_) < (p2->cost_so_far_ + p2->heuristic_value_);
-  }); // to select the lowest cost adjacent
+  if (p == food_->position()) {
+    food_found_ = true;
+    decltype(astar_frontier_) q;
+    std::swap(astar_frontier_, q);
+    return;
+  }
 
   if (astar_visited_.find(p) == astar_visited_.end()) {
     float new_cost = 0;
     for (auto adj : p->adjacent_) {
-      new_cost = p->cost_so_far_ + 1 + adj->heuristic_value_ /*1 == cost from point to point*/;
-      if (astar_visited_.find(adj) == astar_visited_.end() || (new_cost < adj->cost_so_far_ + adj->heuristic_value_)) {
-        adj->cost_so_far_ = new_cost;
+
+      //if (adj->heuristic_adjusted_ == false &&
+      //    adj->heuristic_value_ > snake_->head()->heuristic_value_) {
+      //  adj->heuristic_adjusted_ = true;
+      //  adj->cost_so_far_ += grid_->width();
+      //}
+
+      new_cost = p->cost_so_far_ + 1/* + adj->heuristic_value_ *//*1 == cost from point to point*/;
+
+      if ((astar_visited_.find(adj) == astar_visited_.end()) || (new_cost < (adj->cost_so_far_))) {
+        adj->cost_so_far_ = p->cost_so_far_ + 1;
         adj->parents_ = p;
-        if (adj == food_->position()) {
-          food_found_ = true;
-          decltype(astar_frontier_) q;
-          std::swap(astar_frontier_, q);
-          break;
-        }
         if (adj->is_modifiable_type()) {
           adj->set_type(POINT_TYPE::PATH_ADJACENT);
         }
         astar_frontier_.push_back(adj);
-        break; // just collect the lowest cost one
+        //break; // just collect the lowest cost one
       }
     }
+    astar_visited_.insert(p);
   }
-
-  astar_visited_.insert(p);
 
   if (p->is_modifiable_type()) {
     p->set_type(POINT_TYPE::PATH_VISITED);
@@ -453,10 +469,10 @@ void CStage::draw_obstacles() const {
   background_->draw();
 }
 
-void CStage::expand_frontier() {
+void CStage::expand_frontier(std::ostream& os) {
   //use_bfs();
   //use_dfs();
   //use_dijkstra();
-  use_a_star();
+  use_a_star(os);
   trace_path();
 }

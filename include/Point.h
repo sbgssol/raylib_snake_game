@@ -1,4 +1,6 @@
 #pragma once
+#include <iostream>
+
 #include "type_alias.h"
 #include "macro.h"
 
@@ -24,7 +26,7 @@ public:
 
   // dump methods
   void draw() const;
-  void dump() const;
+  void dump(std::ostream& os = std::cout) const;
   std::string to_string() const;
 public:
   static std::unordered_map<POINT_TYPE, Texture2D> point_image_;
@@ -32,6 +34,7 @@ public:
   CPoint*                 parents_{ nullptr };
   float                   cost_so_far_{ 9999 };
   float                   heuristic_value_{9999};
+  bool                    heuristic_adjusted_{ false };
 private:
   static UI32             size_; // pixel
   UI32                    x_;
