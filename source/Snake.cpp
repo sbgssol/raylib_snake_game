@@ -1,11 +1,9 @@
-#include <iostream>
 
+#include <algorithm>
 #include "Snake.h"
 
 
 void CSnake::move(DIRECTION t_direction, bool t_just_eat_food) {
-  // TODO [DONE]: Boundary checking
-  // BUG: Boundary BOTTOM/RIGHT, direction=RIGHT => DONE
   std::unordered_map<DIRECTION, DIRECTION> direction_checker {
     { DIRECTION::UP    , DIRECTION::DOWN},
     { DIRECTION::DOWN  , DIRECTION::UP},
@@ -16,7 +14,7 @@ void CSnake::move(DIRECTION t_direction, bool t_just_eat_food) {
   if (direction_checker[t_direction] == this->direction_) {
     t_direction = this->direction_;
   }
-  
+
   std::unordered_map<DIRECTION, UI32> new_head{
     { DIRECTION::UP    , grid_->get_point_id(head_) - 1},
     { DIRECTION::DOWN  , grid_->get_point_id(head_) + 1},
@@ -40,7 +38,6 @@ void CSnake::move(DIRECTION t_direction, bool t_just_eat_food) {
     }
   }
 
-  //std::cout << __FUNCTION__ << ": direction: " << static_cast<UI32>(t_direction) << ", current head id: " << grid_->get_point_id(head_) << '\n';
   set_direction(t_direction);
   if(t_just_eat_food) {
     body_.insert(body_.begin(), this->head());
@@ -69,6 +66,15 @@ void CSnake::draw() const {
     p->draw();
   }
 }
+bool CSnake::is_body_collided() const {
+  return std::any_of(body_.begin(), body_.end(), [=](CPoint* p) {
+    return p == head_;
+  });
+}
+
+bool CSnake::is_tail_collided() const {
+  return (tail_ == head_);
+}
 
 void CSnake::set_head(CPoint* t_head) {
   this->head_ = t_head;
@@ -76,7 +82,7 @@ void CSnake::set_head(CPoint* t_head) {
 }
 
 void CSnake::set_tail(CPoint* t_tail) {
-  this->tail_->set_type(POINT_TYPE::SPACE); //TODO: Not always type=SPACE
+  this->tail_->set_type(POINT_TYPE::SPACE); //BUG: Not always type=SPACE
   this->tail_ = t_tail;
   this->tail_->set_type(POINT_TYPE::SNAKE_TAIL);
 }

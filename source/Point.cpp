@@ -26,12 +26,14 @@ POINT_TYPE CPoint::type() const {
   return type_;
 }
 
+// BUG the shortest path could be determined through snake body
 bool CPoint::is_reachable() const {
-  return ( type() != POINT_TYPE::WALL       && 
-           type() != POINT_TYPE::OBSTACLE   &&
-           /*type() != POINT_TYPE::SNAKE_HEAD &&*/
-           type() != POINT_TYPE::SNAKE_TAIL &&
-           type() != POINT_TYPE::SNAKE_BODY);
+  return ( type() == POINT_TYPE::SPACE
+        || type() == POINT_TYPE::FOOD
+        || type() == POINT_TYPE::PATH_ADJACENT
+        || type() == POINT_TYPE::PATH_CURRENT
+        || type() == POINT_TYPE::PATH_FOUND_PATH
+        || type() == POINT_TYPE::PATH_VISITED);
 }
 
 bool CPoint::is_modifiable_type() const {
@@ -53,6 +55,7 @@ UI32 CPoint::get_size() {
 }
 // TODO: adjust texture with point size
 void CPoint::initialize_point_image() {
+  point_image_.clear();
   std::unordered_map<POINT_TYPE, char const *> image_name{
     { POINT_TYPE::SPACE           , "resources/steel.png"       },
     { POINT_TYPE::OBSTACLE        , "resources/brick.png"       },
@@ -61,7 +64,7 @@ void CPoint::initialize_point_image() {
     { POINT_TYPE::SNAKE_BODY      , "resources/snake_skin.png"  },
     { POINT_TYPE::SNAKE_TAIL      , "resources/snake_skin.png"  }
   };
-  
+
   for(auto& p : image_name) {
     Texture2D texture = LoadTexture(p.second);
     texture.height = CPoint::size_;
@@ -80,24 +83,26 @@ void CPoint::draw() const {
 
   if (point_image_.find(type()) == point_image_.end()) 	{
     DrawRectangle(r.x, r.y, r.width, r.height, G_TYPE_COLOR.at(this->type_));
-
-    // for checking heuristic value; require draw full
-    //UI32 pos_x = x_ * CPoint::size_;
-    //UI32 pos_y = y_ * CPoint::size_;
-    //std::stringstream ss;
-    //ss << std::setprecision(2) << heuristic_value_;
-    //ss << " ";
-    //ss << cost_so_far_;
-    //DrawText(ss.str().c_str(), pos_x, pos_y, 1, RED);
   } else {
-    DrawTexture(point_image_.at(type()), r.x, r.y, WHITE);
+    if(type() == POINT_TYPE::PATH_FOUND_PATH) {
+      DrawRectangleLinesEx(r, 3, G_TYPE_COLOR.at(type()));
+    } else {
+      DrawRectangle(r.x, r.y, r.width, r.height, G_TYPE_COLOR.at(this->type_));
+    }
+    //DrawTexture(point_image_.at(type()), r.x, r.y, WHITE);
   }
 
-  
+  //if (type() != POINT_TYPE::SPACE) 	{
+  //  // for checking heuristic value; require draw full
+  //  UI32 pos_x = x_ * CPoint::size_;
+  //  UI32 pos_y = y_ * CPoint::size_;
+  //  std::stringstream ss;
+  //  ss << std::setprecision(2) << heuristic_value_;
+  //  ss << " ";
+  //  ss << cost_so_far_;
+  //  DrawText(ss.str().c_str(), pos_x, pos_y, 1, RED);
+  //}
 
-  //ss.str("");
-  //ss << (x_ * 600/30 + y_);
-  //DrawText(ss.str().c_str(), pos_x + 7, pos_y + 7, 5, YELLOW);
 }
 
 void CPoint::dump(std::ostream& os) const {
@@ -105,7 +110,7 @@ void CPoint::dump(std::ostream& os) const {
   std::stringstream ss1;
   ss1 << "(" << x_ << ", " << y_ << ")";
   ss << std::setw(10) << std::setfill(' ') << std::left << ss1.str() << ": " <<
-    std::setw(20) << std::setfill(' ') << std::left << G_TYPE_NAME.at(type_) << 
+    std::setw(20) << std::setfill(' ') << std::left << G_TYPE_NAME.at(type_) <<
     ", h: " << std::setw(10) << std::setfill(' ') << heuristic_value_        <<
     ", cost so far: " << std::setw(10) << std::setfill(' ') << cost_so_far_  <<
     ", total: " << std::setw(10) << std::setfill(' ') << heuristic_value_ + cost_so_far_;

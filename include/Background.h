@@ -13,6 +13,7 @@ public:
   }
 
   void draw() const;
+  bool is_obstacle_collided(CPoint* t_point) const;
 
 protected:
   void init_wall();

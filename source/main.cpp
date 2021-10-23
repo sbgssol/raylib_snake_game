@@ -67,6 +67,7 @@ bool key_pressed = false;
 
 CStage* stage;
 
+GAME_STATUS game_status = GAME_STATUS::PLAYING;
 std::fstream log_file;
 
 
@@ -88,9 +89,9 @@ int main(void) {
   InitWindow(screenWidth, screenHeight, ss.str().c_str());
   InitGame();
 
-  
 
-  //SetTargetFPS(500);
+
+  SetTargetFPS(1000);
 
 
   // Main game loop
@@ -123,12 +124,12 @@ void InitGame(void) {
   //stage->dump();
   framesCounter = 0;
   gameOver = false;
-  pause = false;  
+  pause = false;
 }
 
 // Update game (one frame)
 void UpdateGame(void) {
-  if (!gameOver) {
+  if (!gameOver && game_status == GAME_STATUS::PLAYING) {
     if (IsKeyPressed('P')) pause = !pause;
 
     if (!pause) {
@@ -157,27 +158,34 @@ void UpdateGame(void) {
         d = DIRECTION::DOWN;
         key_pressed = true;
       }
+
+      if (1) {
+        stage->expand_frontier(log_file);
+      }
       if (stage->is_food_collided()) {
         stage->handle_food_collision();
       }
-
-      if (true) {
-        stage->expand_frontier(log_file);
+      if(stage->is_obstacle_collided()) {
+        stage->handle_obstacle_conlision(game_status);
+      }
+      if(stage->is_snake_collided_itself()) {
+        stage->handle_snake_itself_collision(game_status);
       }
       // Snake movement
-      if ((framesCounter % 600) == 0 && key_pressed) {
+      if ((framesCounter % 500) == 0 && key_pressed) {
         framesCounter = 0;
         // TODO: Control speed by framesCounter and modulo
         stage->move_snake(d);
 
       }
-      
+
       framesCounter++;
     }
   } else {
     if (IsKeyPressed(KEY_ENTER)) {
       InitGame();
       gameOver = false;
+      game_status = GAME_STATUS::PLAYING;
     }
   }
 }
@@ -188,12 +196,12 @@ void DrawGame(void) {
 
   ClearBackground(LIGHTGRAY);
 
-  if (!gameOver) {
+  if (!gameOver && game_status == GAME_STATUS::PLAYING) {
     stage->draw();
     auto fps = GetFPS();
     std::string fps_str = std::to_string(fps) + " FPS";
     DrawText(fps_str.c_str(), 30, 30, 30, RED);
-    
+
     if (pause)
       DrawText("GAME PAUSED", screenWidth / 2 - MeasureText("GAME PAUSED", 40) / 2, screenHeight / 2 - 40, 40,
                GRAY);

@@ -14,11 +14,20 @@ void CBackground::draw() const {
   }
 }
 
+bool CBackground::is_obstacle_collided(CPoint* t_point) const {
+  for(auto p : obstacle_) {
+    if (t_point == p) {
+      return true;
+    }
+  }
+  return false;
+}
+
 void CBackground::init_wall() {
   wall_.clear();
   switch (level_) {
     case LEVEL::_0: {
-      
+
     }
     //case LEVEL::_1: {
     //  for (UI32 id = 0; id < (grid_->width() * grid_->height()); ++id) {

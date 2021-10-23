@@ -25,7 +25,8 @@ public:
   CPoint* tail() const;
   DIRECTION get_direction() const;
   void draw() const;
-  
+  bool is_body_collided() const;
+  bool is_tail_collided() const;
 protected:
   void set_head(CPoint* t_head);
   void set_tail(CPoint* t_tail);

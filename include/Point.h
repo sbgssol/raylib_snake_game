@@ -32,7 +32,7 @@ public:
   static std::unordered_map<POINT_TYPE, Texture2D> point_image_;
   std::vector<CPoint*>    adjacent_;
   CPoint*                 parents_{ nullptr };
-  float                   cost_so_far_{ 9999 };
+  UI32                    cost_so_far_{ 9999 };
   float                   heuristic_value_{9999};
   bool                    heuristic_adjusted_{ false };
 private:

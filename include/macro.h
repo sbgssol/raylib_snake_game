@@ -42,6 +42,13 @@ enum class DIRECTION {
   RIGHT
 };
 
+enum class GAME_STATUS {
+  PLAYING,
+  PAUSED,
+  OBSTACLE_COLLIDED,
+  SNAKE_COLLIDED
+};
+
 enum class SPEED {
   _1 = 1,
   _2,
@@ -96,7 +103,7 @@ static std::unordered_map<POINT_TYPE, std::string> const G_TYPE_NAME {
   { POINT_TYPE::PATH_VISITED    , "path_visited"    },
   { POINT_TYPE::PATH_FOUND_PATH , "path_found_path" },
   { POINT_TYPE::PATH_ADJACENT   , "path_adjacent"   },
-  { POINT_TYPE::PATH_CURRENT    , "path_current"    }  
+  { POINT_TYPE::PATH_CURRENT    , "path_current"    }
 };
 
 static std::unordered_map<POINT_TYPE, char> const G_TYPE_CHAR {
@@ -115,17 +122,18 @@ static std::unordered_map<POINT_TYPE, Color> G_TYPE_COLOR{
   { POINT_TYPE::SPACE          , WHITE     },
   { POINT_TYPE::FOOD           , ORANGE    },
   { POINT_TYPE::WALL           , RED       },
-  { POINT_TYPE::OBSTACLE       , DARKBROWN },
+  { POINT_TYPE::OBSTACLE       , BLACK     },
   { POINT_TYPE::SNAKE_HEAD     , DARKBLUE  },
   { POINT_TYPE::SNAKE_HEAD_PC  , DARKGREEN },
   { POINT_TYPE::SNAKE_BODY     , BLUE      },
   { POINT_TYPE::SNAKE_BODY_PC  , GREEN      },
-  { POINT_TYPE::SNAKE_TAIL     , SKYBLUE   },
-  { POINT_TYPE::SNAKE_TAIL_PC  , GREEN   },
-  { POINT_TYPE::PATH_ADJACENT  , VIOLET    },
-  { POINT_TYPE::PATH_FOUND_PATH, PURPLE    },
-  { POINT_TYPE::PATH_VISITED   , BLACK     },
+  { POINT_TYPE::SNAKE_TAIL     , BLUE   },
+  { POINT_TYPE::SNAKE_TAIL_PC  , GREEN     },
+  { POINT_TYPE::PATH_ADJACENT  , DARKGRAY },
+  { POINT_TYPE::PATH_FOUND_PATH, PINK    },
+  { POINT_TYPE::PATH_VISITED   , GRAY     },
   { POINT_TYPE::PATH_CURRENT   , RED       }
 };
 
 #define watch(x) std::cout << (#x) << ": " << (x) << '\n'
+#define show(x) std::cout << (x) << '\n'

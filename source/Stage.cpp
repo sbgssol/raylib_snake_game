@@ -9,9 +9,9 @@ UI32 CStage::stage_count{ 0 };
 
 CStage::CStage(SScreenInfo t_screen_info, LEVEL t_level) {
   CGrid::initial_type_ = POINT_TYPE::UNDEFINED;
-  CPoint::initialize_point_image();
   ++stage_count;
   grid_ = new CGrid{ t_screen_info.width_, t_screen_info.height_, t_screen_info.grid_size_ };
+  CPoint::initialize_point_image();
   background_ = new CBackground{ grid_, t_level };
   snake_ = init_snake();
   pc_snake_ = init_snake(SNAKE_TYPE::PC);
@@ -25,10 +25,12 @@ CStage::~CStage() {
   delete background_;
   delete food_;
   delete snake_;
+  delete pc_snake_;
 }
 
 void CStage::move_snake(DIRECTION t_d) {
   this->snake_->move(t_d, just_eat_food_);
+  auto_move();
   just_eat_food_ = false;
 }
 
@@ -41,9 +43,10 @@ DIRECTION CStage::get_initialized_snake_direction() const {
 }
 
 bool CStage::is_food_collided() const {
-  return snake_->head() == food_->position();
+  return (snake_->head() == food_->position() ||
+          pc_snake_->head() == food_->position());
 }
-
+// BUG: If a point's parents were not cleared, the trace path got loop
 void CStage::handle_food_collision() {
   spawn_food();
   just_eat_food_ = true;
@@ -56,8 +59,12 @@ void CStage::handle_food_collision() {
     }
   }
   shortest_path_.clear();
+  for(auto p : astar_visited_) {
+    p->parents_ = nullptr;
+  }
   astar_visited_.clear();
   astar_frontier_.clear();
+
 }
 
 void CStage::spawn_food() {
@@ -106,36 +113,34 @@ CSnake* CStage::init_snake(SNAKE_TYPE t_snake_type) {
   CPoint* tail = nullptr;
   std::vector<CPoint*> body;
 
+  UI32 const head_id = grid_->get_point_id(head);
+
   DIRECTION const direction = RRND::Core<DIRECTION>::random({ DIRECTION::DOWN, DIRECTION::UP, DIRECTION::LEFT, DIRECTION::RIGHT });
   if (direction == DIRECTION::DOWN) {
-    UI32 head_id = head->x() * grid_->height() + head->y();
     tail = grid_->at(head_id - static_cast<UI32>(DEFAULT::SNAKE_LENGTH));
-    for (UI32 i = 0; i < static_cast<UI32>(DEFAULT::SNAKE_LENGTH); ++i) {
+    for (UI32 i = 1; i <= static_cast<UI32>(DEFAULT::SNAKE_LENGTH); ++i) {
       body.emplace_back(grid_->at(head_id - i));
     }
   }
 
   if (direction == DIRECTION::UP) {
-    UI32 head_id = head->x() * grid_->height() + head->y();
     tail = grid_->at(head_id + static_cast<UI32>(DEFAULT::SNAKE_LENGTH));
-    for (UI32 i = 0; i < static_cast<UI32>(DEFAULT::SNAKE_LENGTH); i++) {
+    for (UI32 i = 1; i <= static_cast<UI32>(DEFAULT::SNAKE_LENGTH); ++i) {
       body.emplace_back(grid_->at(head_id + i));
     }
   }
 
   if (direction == DIRECTION::LEFT) {
-    UI32 head_id = head->x() * grid_->height() + head->y();
     tail = grid_->at(head_id + static_cast<UI32>(DEFAULT::SNAKE_LENGTH) * grid_->height());
-    for (UI32 i = 0; i < static_cast<UI32>(DEFAULT::SNAKE_LENGTH); i++) {
+    for (UI32 i = 1; i <= static_cast<UI32>(DEFAULT::SNAKE_LENGTH); ++i) {
       body.emplace_back(grid_->at(head_id + grid_->height() * i));
     }
   }
 
   if (direction == DIRECTION::RIGHT) {
-    UI32 head_id = head->x() * grid_->height() + head->y();
     tail = grid_->at(head_id - grid_->height() * static_cast<UI32>(DEFAULT::SNAKE_LENGTH));
 
-    for (UI32 i = 0; i < static_cast<UI32>(DEFAULT::SNAKE_LENGTH); i++) {
+    for (UI32 i = 1; i <= static_cast<UI32>(DEFAULT::SNAKE_LENGTH); ++i) {
       body.emplace_back(grid_->at(head_id - grid_->height() * i));
     }
   }
@@ -145,7 +150,6 @@ CSnake* CStage::init_snake(SNAKE_TYPE t_snake_type) {
   }
   head->set_type(G_SNAKE_HEAD_TYPE.at(t_snake_type));
   tail->set_type(G_SNAKE_TAIL_TYPE.at(t_snake_type));
-
   CSnake* snake = new CSnake{ grid_, head, tail, body, static_cast<UI32>(DEFAULT::SNAKE_LENGTH), direction };
   initialized_direction_ = direction;
   return snake;
@@ -180,8 +184,9 @@ CPoint* CStage::random_point(std::function<bool(UI32)> t_x_constraint, std::func
 }
 
 void CStage::init_graph() {
+  // BUG: do not need to judge type here!
   auto insert_adj = [=](CPoint* source, CPoint* adj) -> void {
-    if (adj->is_reachable()) {
+    if (/*adj->is_reachable()*/1) {
       source->adjacent_.push_back(adj);
     }
   };
@@ -253,6 +258,49 @@ void CStage::init_graph() {
       }
     }
   }
+}
+
+bool CStage::is_snake_body_collided() const {
+  return snake_->is_body_collided();
+}
+
+bool CStage::is_snake_tail_collided() const {
+  return snake_->is_tail_collided();
+}
+//BUG Sometimes get error about direction
+void CStage::auto_move() {
+  watch(__FUNCTION__);
+  watch(shortest_path_.size());
+  if(shortest_path_.empty()) {
+    return;
+  }
+
+  DIRECTION d = pc_snake_->get_direction();
+  auto p = shortest_path_.back();
+  shortest_path_.pop_back();
+
+  auto head = pc_snake_->head();
+
+  watch(grid_->get_point_id(p));
+  watch(grid_->get_point_id(head));
+  if(grid_->get_point_id(p) == (grid_->get_point_id(head) - 1)) {
+    show("d=UP");
+    d = DIRECTION::UP;
+  }
+  if(grid_->get_point_id(p) == (grid_->get_point_id(head) + 1)) {
+    show("d=DOWN");
+    d = DIRECTION::DOWN;
+  }
+  if (grid_->get_point_id(p) + grid_->width() == (grid_->get_point_id(head))) {
+    show("d=LEFT");
+    d = DIRECTION::LEFT;
+  }
+  if (grid_->get_point_id(p) == (grid_->get_point_id(head) + grid_->width())) {
+    show("d=RIGHT");
+    d = DIRECTION::RIGHT;
+  }
+  pc_snake_->move(d, just_eat_food_);
+
 }
 
 void CStage::use_bfs() {
@@ -365,38 +413,50 @@ void CStage::use_dfs() {
   }
 }
 
+double calculate_heuristic(CPoint* start, CPoint* end) {
+  // use manhattan
+  //float x_dis = std::abs(static_cast<SI32>(start->x()) - static_cast<SI32>(end->x()));
+  //float y_dis = std::abs(static_cast<SI32>(start->y()) - static_cast<SI32>(end->y()));
+  //return (x_dis + y_dis);
+
+  // use euclidean
+  double x_dis = std::pow(static_cast<double>(start->x()) - static_cast<double>(end->x()), 2);
+  double y_dis = std::pow(static_cast<double>(start->y()) - static_cast<double>(end->y()), 2);
+  return std::sqrt(x_dis + y_dis);
+}
+
 // TODO [DONE: now search towards fruit, but still large] improve a*
-void CStage::use_a_star(std::ostream& os) {
+void CStage::use_step_a_star(std::ostream& os) {
   if (frontier_initialized_ && astar_frontier_.empty()) {
     return;
   }
+
+  CSnake* snake = pc_snake_;
+
   if (astar_frontier_.empty()) {
-    grid_->calculate_heuristic_value(food_->position());
-    for (auto adj : snake_->head()->adjacent_) {
+    for (auto adj : snake->head()->adjacent_) {
       adj->cost_so_far_ = 1;
       astar_frontier_.push_back(adj);
     }
     frontier_initialized_ = true;
   }
 
+  auto food_position = food_->position();
 
-  astar_frontier_.sort([](CPoint* p1, CPoint* p2) {
-    //return (p1->heuristic_value_) < (p2->heuristic_value_);
-    //return (p1->cost_so_far_) < (p2->cost_so_far_);
-    return (p1->cost_so_far_ + p1->heuristic_value_) < (p2->cost_so_far_ + p2->heuristic_value_);
-    //return (p1->cost_so_far_ > p2->cost_so_far_) && (p1->heuristic_value_ < p2->heuristic_value_);
+  astar_frontier_.sort([food_position](CPoint* p1, CPoint* p2) {
+    auto p1_heuristic = calculate_heuristic(p1, food_position);
+    auto p2_heuristic = calculate_heuristic(p2, food_position);
+    auto p1_value = static_cast<double>(p1->cost_so_far_) + p1_heuristic;
+    auto p2_value = static_cast<double>(p2->cost_so_far_) + p2_heuristic;
+    //if(p1_value == p2_value) {
+    //  return p1_heuristic < p2_heuristic;
+    //}
+    return p1_value < p2_value;
   });
-  // for debugging
-  //os << "start\n";
-  //os << food_->position()->to_string() << '\n';
-  //for (auto p : astar_frontier_) {
-  //  p->dump(os);
-  //}
-  //os << "end\n";
-  ///////////////////
   CPoint* p = astar_frontier_.front();
   astar_frontier_.pop_front();
-  if (p == food_->position()) {
+
+  if (p == food_position) {
     food_found_ = true;
     decltype(astar_frontier_) q;
     std::swap(astar_frontier_, q);
@@ -404,45 +464,102 @@ void CStage::use_a_star(std::ostream& os) {
   }
 
   if (astar_visited_.find(p) == astar_visited_.end()) {
-    float new_cost = 0;
+    astar_visited_.insert(p);
+    //p->heuristic_value_ = calculate_heuristic(p, food_position);
     for (auto adj : p->adjacent_) {
-
-      //if (adj->heuristic_adjusted_ == false &&
-      //    adj->heuristic_value_ > snake_->head()->heuristic_value_) {
-      //  adj->heuristic_adjusted_ = true;
-      //  adj->cost_so_far_ += grid_->width();
-      //}
-
-      new_cost = p->cost_so_far_ + 1/* + adj->heuristic_value_ *//*1 == cost from point to point*/;
-
-      if ((astar_visited_.find(adj) == astar_visited_.end()) || (new_cost < (adj->cost_so_far_))) {
-        adj->cost_so_far_ = p->cost_so_far_ + 1;
+      UI32 const new_cost = p->cost_so_far_ + 1;
+      if ((astar_visited_.find(adj) == astar_visited_.end()) || (new_cost < adj->cost_so_far_)) {
+        adj->cost_so_far_ = new_cost;
         adj->parents_ = p;
         if (adj->is_modifiable_type()) {
           adj->set_type(POINT_TYPE::PATH_ADJACENT);
         }
         astar_frontier_.push_back(adj);
-        //break; // just collect the lowest cost one
       }
     }
-    astar_visited_.insert(p);
   }
 
   if (p->is_modifiable_type()) {
     p->set_type(POINT_TYPE::PATH_VISITED);
+  }
+
+}
+
+void CStage::use_full_a_star(std::ostream&) {
+  if (frontier_initialized_ && astar_frontier_.empty()) {
+    return;
+  }
+
+  CSnake* snake = pc_snake_;
+
+  if (astar_frontier_.empty()) {
+    for (auto adj : snake->head()->adjacent_) {
+      if (adj->is_reachable()) 	{
+        adj->cost_so_far_ = 1;
+        astar_frontier_.push_back(adj);
+      }
+    }
+    frontier_initialized_ = true;
+  }
+
+  auto food_position = food_->position();
+  while (true) 	{
+    astar_frontier_.sort([food_position](CPoint* p1, CPoint* p2) {
+      auto p1_heuristic = calculate_heuristic(p1, food_position);
+      auto p2_heuristic = calculate_heuristic(p2, food_position);
+      auto p1_value = static_cast<double>(p1->cost_so_far_) + p1_heuristic;
+      auto p2_value = static_cast<double>(p2->cost_so_far_) + p2_heuristic;
+      //if(p1_value == p2_value) {
+      //  return p1_heuristic < p2_heuristic;
+      //}
+      return p1_value < p2_value;
+    });
+    CPoint* p = astar_frontier_.front();
+    astar_frontier_.pop_front();
+
+    if (p == food_position) {
+      food_found_ = true;
+      decltype(astar_frontier_) q;
+      std::swap(astar_frontier_, q);
+      return;
+    }
+
+    if (astar_visited_.find(p) == astar_visited_.end()) {
+      astar_visited_.insert(p);
+      //p->heuristic_value_ = calculate_heuristic(p, food_position);
+      for (auto adj : p->adjacent_) {
+        if (adj->is_reachable()) 	{
+          UI32 const new_cost = p->cost_so_far_ + 1;
+          if ((astar_visited_.find(adj) == astar_visited_.end()) || (new_cost < adj->cost_so_far_)) {
+            adj->cost_so_far_ = new_cost;
+            adj->parents_ = p;
+            if (adj->is_modifiable_type()) {
+              adj->set_type(POINT_TYPE::PATH_ADJACENT);
+            }
+            astar_frontier_.push_back(adj);
+          }
+        }
+      }
+    }
+
+    if (p->is_modifiable_type()) {
+      p->set_type(POINT_TYPE::PATH_VISITED);
+    }
   }
 }
 
 void CStage::trace_path() {
   if (food_found_) {
     CPoint* current = food_->position()->parents_;
+    shortest_path_.push_back(food_->position());
     while (current) {
-      if (current->is_modifiable_type()) 	{
+      if (current->is_modifiable_type() || 1) 	{
         current->set_type(POINT_TYPE::PATH_FOUND_PATH);
       }
       shortest_path_.push_back(current);
       current = current->parents_;
     }
+    //std::reverse(shortest_path_.begin(), shortest_path_.end());
     food_found_ = false;
   }
 }
@@ -476,9 +593,26 @@ void CStage::expand_frontier(std::ostream& os) {
   //use_bfs();
   //use_dfs();
   //use_dijkstra();
-  use_a_star(os);
+  //use_step_a_star(os);
+  use_full_a_star(os);
   //std::thread fiding_thread;
-  //fiding_thread = std::thread{ &CStage::use_a_star, this, std::ref(os) };  
+  //fiding_thread = std::thread{ &CStage::use_a_star, this, std::ref(os) };
   //fiding_thread.detach();
   trace_path();
+}
+
+bool CStage::is_obstacle_collided() const {
+  return background_->is_obstacle_collided(snake_->head());
+}
+
+void CStage::handle_obstacle_conlision(GAME_STATUS& t_game_status) {
+  t_game_status = GAME_STATUS::OBSTACLE_COLLIDED;
+}
+
+bool CStage::is_snake_collided_itself() const {
+  return is_snake_body_collided() || is_snake_tail_collided();
+}
+
+void CStage::handle_snake_itself_collision(GAME_STATUS& t_game_status) {
+  t_game_status = GAME_STATUS::SNAKE_COLLIDED;
 }

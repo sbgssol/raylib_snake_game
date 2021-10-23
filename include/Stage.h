@@ -20,7 +20,10 @@ public:
   bool      is_food_collided() const;
   void      handle_food_collision();
   void      expand_frontier(std::ostream& = std::cout);
-
+  bool      is_obstacle_collided() const;
+  void      handle_obstacle_conlision(GAME_STATUS& t_game_status);
+  bool      is_snake_collided_itself() const;
+  void      handle_snake_itself_collision(GAME_STATUS& t_game_status);
   void draw() const;
   void dump() const;
   static UI32 stage_count;
@@ -32,11 +35,15 @@ protected:
   CPoint* random_point() const;
   CPoint* random_point(std::function<bool(UI32)> t_x_constraint, std::function<bool(UI32)> t_y_constraint) const;
   void    init_graph();
+  bool    is_snake_body_collided() const;
+  bool    is_snake_tail_collided() const;
+  void    auto_move();
 
   void    use_bfs();
   void    use_dijkstra();
   void    use_dfs();
-  void    use_a_star(std::ostream& = std::cout);
+  void    use_step_a_star(std::ostream& = std::cout);
+  void    use_full_a_star(std::ostream& = std::cout);
   void    trace_path();
 
   void    draw_grid() const;
@@ -52,14 +59,14 @@ protected:
   std::list<CPoint*>           astar_frontier_;
   std::unordered_set<CPoint*>  astar_visited_;
   std::vector<CPoint*>         shortest_path_;
-  
+
   bool                frontier_initialized_{ false };
   bool                food_found_{ false };
 
   DIRECTION    initialized_direction_{ DIRECTION::UP };
   bool         just_eat_food_ {false}; // to increase snake head while moving
 
-  
+
 private:
   CGrid*       grid_;
   CBackground* background_;
